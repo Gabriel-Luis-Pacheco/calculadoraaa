@@ -68,7 +68,7 @@ function tinyZip(){
  const central=Buffer.alloc(46);central.writeUInt32LE(0x02014b50,0);central.writeUInt16LE(8,10);central.writeUInt32LE(deflate.length,20);central.writeUInt32LE(csv.length,24);central.writeUInt16LE(name.length,28);
  const size=central.length+name.length,offset=local.length+name.length+deflate.length;
  const eocd=Buffer.alloc(22);eocd.writeUInt32LE(0x06054b50,0);eocd.writeUInt16LE(1,8);eocd.writeUInt16LE(1,10);eocd.writeUInt32LE(size,12);eocd.writeUInt32LE(offset,16);
- return Buffer.concat([local,name,deflate,central,name,eocd]);
+ eocd.writeUInt16LE(1200,20);return Buffer.concat([local,name,deflate,central,name,eocd,Buffer.alloc(1200)]);
 }
 test('ISS API returns health and municipality/service from official CSV ZIP structure',async()=>{
  let res=response();await iss(request('GET',null,{query:{health:'1'}}),res);
