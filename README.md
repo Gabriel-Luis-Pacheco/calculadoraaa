@@ -1,23 +1,43 @@
 # Calculadora RTC — Ambiente Fiscal
 
-Plataforma de apoio fiscal que reúne os motores de código aberto da Receita Federal do Brasil para **Regime Regular** e **Simples Nacional** com uma interface destinada a profissionais tributários, fiscais e contábeis.
+**Dois motores oficiais de código aberto e uma interface fiscal própria, em um repositório só.**
 
-> **Projeto independente.** Não é um serviço oficial da Receita Federal. A legislação, as tabelas e o alcance dos cálculos dependem da versão instalada de cada motor, de seus bancos de dados e de configurações corretas.
+O projeto reúne o código integral da Receita Federal para **Regime Regular** e **Simples Nacional**, sem misturar os sistemas Java. Também preserva nosso simulador de impacto e a interface de cálculo fiscal existente.
 
-## Estrutura
+## Organização
 
-- `motores/regime-regular/` — código-fonte original da [Calculadora RTC Regime Regular](https://github.com/ReceitaFederal/calculadora-rtc-regime-regular).
-- `motores/simples-nacional/` — código-fonte original da [Calculadora RTC Simples Nacional](https://github.com/ReceitaFederal/calculadora-rtc-simples-nacional).
-- `web/` — nossa interface fiscal, simulador legado e futuras integrações.
-- `infra/` — configuração para execução e deployment integrado.
-- `docs/` — diferenças, requisitos, instruções, cobertura e validação.
+| Pasta | Conteúdo |
+|---|---|
+| [motores/regime-regular](motores/regime-regular) | Código integral de CBS, IBS e IS, incluindo bases, XML, NFS-e, pedágio, bancos/migrações, dados abertos e testes |
+| [motores/simples-nacional](motores/simples-nacional) | Código integral do Simples Nacional, cálculo por atividade, catálogo, observabilidade e testes |
+| [web](web) | Simulador original, Regime Regular, novo formulário de Simples Nacional, consulta ISS e proxies |
+| [infra](infra) | Docker e scripts de preparação do SQLite |
+| [docs](docs) | Proveniência, implantação e verificação |
 
-Os motores são **serviços distintos**: não tente mesclar seus `src/main/java` em uma única aplicação Spring Boot.
+### Interface
 
-## Autoria e licenças
+- **Regime Regular:** `/oficial`
+- **Simples Nacional:** `/simples`
+- **Simulador de impacto existente:** `/`
 
-Código oficial: © 2026 Receita Federal do Brasil, licença **MIT**. Os arquivos `LICENSE` originais deverão permanecer em cada pasta de motor. Contribuições e interface própria do projeto devem manter seus avisos de autoria correspondentes.
+Para a Vercel, configure **Root Directory = web**.
 
-## Estado da integração
+## Como executar os dois motores localmente
 
-O código-fonte não basta, sozinho, para garantir cálculo válido: é necessário gerar/fornecer os bancos SQLite, configurar o ambiente Java 21+, executar testes, validar o Swagger e homologar resultados com casos fiscais. Não publicar como pronto para produção sem homologação funcional ponta a ponta.
+Pré-requisitos: Java 21, Maven e Docker Compose. Na raiz do repositório:
+
+```bash
+bash infra/setup-db.sh
+docker compose -f infra/compose.yaml up --build
+```
+
+Leia o [guia de integração e homologação](docs/INTEGRACAO.md) antes de iniciar: ambos precisam de uma base SQLite válida; os serviços devem ser testados **separadamente**. A versão inicial do Simples Nacional precisa de implantação própria no Render (ou serviço equivalente) antes de funcionar online.
+
+## Código original e licenças
+
+- [Receita Federal — Regime Regular](https://github.com/ReceitaFederal/calculadora-rtc-regime-regular)
+- [Receita Federal — Simples Nacional](https://github.com/ReceitaFederal/calculadora-rtc-simples-nacional)
+
+As versões exatas copiadas estão em [docs/VERSOES_ORIGINAIS.txt](docs/VERSOES_ORIGINAIS.txt). Os arquivos `LICENSE` MIT originais são preservados em cada motor, com copyright © 2026 Receita Federal do Brasil.
+
+**Projeto independente e não oficial.** Ter o código completo não significa ter todas as interfaces prontas, todas as versões fiscais atualizadas ou homologação para produção. Verifique normas, período de vigência, bases e resultados.
