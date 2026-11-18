@@ -1,0 +1,94 @@
+name: Importar os dois motores oficiais RTC
+
+on:
+  push:
+    paths:
+      - ".github/workflows/importar-motores.yml"
+  workflow_dispatch:
+    inputs:
+      atualizar:
+        description: "Substituir snapshots existentes pelos códigos oficiais atuais?"
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: importar-motores-rtc
+  cancel-in-progress: false
+
+jobs:
+  importar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Obter calculadoraaa
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          persist-credentials: true
+
+      - name: Importar snapshots completos preservando licenças
+        shell: bash
+        env:
+          FORCE_SYNC: ${{ github.event.inputs.atualizar || 'false' }}
+        run: |
+          set -euo pipefail
+          mkdir -p motores docs
+          fetch_engine () {
+            local repository="$1" target="$2" name="$3"
+            if [[ -f "$target/LICENSE" && "$FORCE_SYNC" != "true" ]]; then
+              echo "Snapshot $target já existe; mantendo alterações locais."
+              return
+            fi
+            temp="$(mktemp -d)"
+            git clone --depth 1 --filter=blob:none "https://github.com/ReceitaFederal/${repository}.git" "$temp/original"
+            commit="$(git -C "$temp/original" rev-parse HEAD)"
+            mkdir -p "$target"
+            rsync -a --delete --exclude=.git/ "$temp/original/" "$target/"
+            test -f "$target/LICENSE"
+            test -f "$target/pom.xml"
+            echo "$commit" > "$target/.upstream-commit"
+            printf '%s\n' "$name | https://github.com/ReceitaFederal/$repository | $commit" >> docs/VERSOES_ORIGINAIS.txt
+            rm -rf "$temp"
+          }
+          rm -f docs/VERSOES_ORIGINAIS.txt
+          fetch_engine calculadora-rtc-regime-regular motores/regime-regular REGIME_REGULAR
+          fetch_engine calculadora-rtc-simples-nacional motores/simples-nacional SIMPLES_NACIONAL
+          # Se os snapshots já existiam, registrar versões já importadas também.
+          printf "Snapshot Regime Regular: %s\n" "$(cat motores/regime-regular/.upstream-commit 2>/dev/null || echo ausente)" >> docs/VERSOES_ORIGINAIS.txt
+          printf "Snapshot Simples Nacional: %s\n" "$(cat motores/simples-nacional/.upstream-commit 2>/dev/null || echo ausente)" >> docs/VERSOES_ORIGINAIS.txt
+          echo "Regime Regular: $(find motores/regime-regular -type f | wc -l) arquivos."
+          echo "Simples Nacional: $(find motores/simples-nacional -type f | wc -l) arquivos."
+
+      - name: Validar integridade do código copiado
+        shell: bash
+        run: |
+          set -euo pipefail
+          for motor in motores/regime-regular motores/simples-nacional; do
+            test -s "$motor/README.md"
+            test -s "$motor/LICENSE"
+            test -s "$motor/pom.xml"
+            test -s "$motor/mvnw"
+            test -d "$motor/src/main/java"
+            test -d "$motor/src/test"
+            test -s "$motor/.upstream-commit"
+            echo "Arquivos Java em $motor: $(find "$motor/src/main/java" -name '*.java' | wc -l)"
+          done
+          test -f motores/regime-regular/flyway/sql/criacao/B0001__sistema_tributario_completo.sql
+
+      - name: Enviar todo o código para calculadoraaa
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add motores/regime-regular motores/simples-nacional docs/VERSOES_ORIGINAIS.txt
+          if git diff --cached --quiet; then
+            echo "Sem novos arquivos para copiar."
+          else
+            git commit -m "vendor: código completo RTC Regime Regular e Simples Nacional (Receita Federal)"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
