@@ -87,3 +87,6 @@ html.embedded body:has(#simples-form) #engine-warning[hidden]{display:none!impor
  html.embedded body:has(#simples-form) main:has(#results[hidden])::after{grid-column:1;grid-row:2}
  html.embedded body:has(.top) .layout{grid-template-columns:1fr!important;grid-template-rows:minmax(0,54%) minmax(0,46%)!important}
 }
+
+/* Hard viewport containment: prevent body margin collapse and 8px spill on Chromium. */
+html.embedded body:has(#simples-form){position:fixed!important;inset:0!important;width:100%!important;height:100dvh!important;overflow:hidden!important}
