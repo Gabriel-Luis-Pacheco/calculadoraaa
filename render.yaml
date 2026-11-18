@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: rtc-simples-nacional-java
+    runtime: docker
+    plan: free
+    region: virginia
+    branch: main
+    dockerContext: .
+    dockerfilePath: ./infra/Dockerfile.simples.render
+    envVars:
+      - key: RTC_ENGINE_PROTECTED
+        value: "true"
+      - key: RTC_ENGINE_SHARED_KEY
+        generateValue: true
