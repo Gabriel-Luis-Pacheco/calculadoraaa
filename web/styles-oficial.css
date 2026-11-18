@@ -66,3 +66,12 @@
 
 /* Layout regression guard: every desktop breakpoint must reserve a flexible content column.
    >=1500px: 278px + 1fr; 981-1240px: 222px + 1fr; <=980px: stacked by design. */
+
+/* Extras oficiais recolhidos por padrão: ampliação fiscal sem ocupar a tela compacta */
+.tax-advanced{border-top:1px solid #e3ebec;padding:13px 19px;margin:0 0 9px;background:#fcfdfd;border-radius:0 0 9px 9px}
+.tax-advanced>summary{cursor:pointer;color:#31566b;font-size:12px;font-weight:800;list-style-position:inside;padding:6px 0}
+.tax-advanced[open]>summary{margin-bottom:13px}
+.tax-advanced>.fields-grid,.tax-advanced>.item-fields{padding:8px 0}
+.tax-advanced>p{font-size:11px;line-height:1.65;color:#7d909d;margin:9px 0 0}
+.tax-advanced.item-advanced{border:1px solid #e1e9ec;border-radius:10px;margin:11px 17px;padding:12px;background:#f9fbfa}
+.tax-advanced.item-advanced .item-fields{gap:9px}

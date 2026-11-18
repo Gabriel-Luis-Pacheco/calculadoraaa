@@ -23,7 +23,7 @@ const uniqueId = () => {
   return (Date.now().toString(16) + Math.floor(Math.random()*1e9).toString(16)).padEnd(32,'0').slice(0,32);
 };
 function invalidateStrict(){state.lastStrict=null;state.lastXml='';const save=$('xml-save');if(save)save.disabled=true}
-const initialItem = () => ({kind:'produto',ncm:'',nbs:'',cst:'',cClassTrib:'',base:'',quantity:'',unit:'',cbs:'',ibsUf:'',ibsMun:'',hasIS:false,isCst:'',isClass:'',isBase:'',isAmount:'',isQuantity:'',isUnit:'',isAdValorem:'',isAdRem:''});
+const initialItem = () => ({kind:'produto',ncm:'',nbs:'',cst:'',cClassTrib:'',base:'',quantity:'',unit:'',cbs:'',ibsUf:'',ibsMun:'',hasIS:false,isCst:'',isClass:'',isBase:'',isAmount:'',isQuantity:'',isUnit:'',isAdValorem:'',isAdRem:'',regularCst:'',regularClass:'',bcProd:'',bcFrete:'',bcSeg:'',bcOutro:'',bcII:'',bcIS:'',bcDesc:'',bcPIS:'',bcCOFINS:'',bcICMS:'',bcICMSDest:'',bcFCP:'',bcFCPDest:'',bcICMSMono:'',bcISSQN:''});
 const sampleItems = () => ([
  {kind:'produto',ncm:'10063021',nbs:'',cst:'200',cClassTrib:'200003',base:'100,00',quantity:'20',unit:'KG',cbs:'8,8',ibsUf:'0,05',ibsMun:'0,05',hasIS:false,isCst:'',isClass:'',isBase:'',isAmount:'',isQuantity:'',isUnit:'',isAdValorem:'',isAdRem:''},
  {kind:'servico',ncm:'',nbs:'122011200',cst:'200',cClassTrib:'200028',base:'1200,00',quantity:'',unit:'',cbs:'8,8',ibsUf:'0,05',ibsMun:'0,05',hasIS:false,isCst:'',isClass:'',isBase:'',isAmount:'',isQuantity:'',isUnit:'',isAdValorem:'',isAdRem:''}
@@ -186,6 +186,9 @@ function cardHTML(item,i){
  const nomenclature=item.kind==='produto'?'ncm':'nbs';
  const rateForm='<div class="item-subgroup rates-wrap"'+(is2027?'':' hidden')+'><div class="item-subgroup-header"><h4>Alíquotas nominais informadas (%)</h4></div><p>Obrigatórias para operações de 2027 em diante. O resultado será identificado como simulado.</p><div class="item-fields">'+itemField(i,'cbs','CBS','8,8')+itemField(i,'ibsUf','IBS estadual','0,05')+itemField(i,'ibsMun','IBS municipal','0,05')+'</div></div>';
  const isForm='<div class="item-subgroup is-box"'+(item.hasIS?'':' hidden')+'><div class="item-subgroup-header"><h4>Imposto Seletivo</h4><span class="eyebrow">SE APLICÁVEL</span></div><p>Preencha apenas para operações sujeitas ao IS, conforme classificação e vigência.</p><div class="item-fields">'+itemField(i,'isCst','CST do IS','000')+itemField(i,'isClass','Classificação do IS','000001')+itemField(i,'isBase','Base de cálculo do IS (R$)','150,00')+itemField(i,'isAmount','IS informado (R$)','15,00')+itemField(i,'isQuantity','Quantidade para IS','12')+itemField(i,'isUnit','Unidade do IS','LT')+(is2027?itemField(i,'isAdValorem','Alíquota ad valorem (%)','10'): '')+(is2027?itemField(i,'isAdRem','Alíquota ad rem','0,50'): '')+'</div></div>';
+ const regularForm='<details class="tax-advanced item-advanced"><summary>Tributação regular do item · opcional</summary><div class="item-fields">'+itemField(i,'regularCst','CST de tributação regular','000')+itemField(i,'regularClass','cClassTrib de tributação regular','000001')+'</div><p>Informe os dois códigos somente quando a classificação exigir o grupo de tributação regular.</p></details>';
+ const componentFields=[['bcProd','Valor dos produtos ou serviços','1.000,00'],['bcFrete','Frete','50,00'],['bcSeg','Seguro','20,00'],['bcOutro','Outras despesas','10,00'],['bcII','Imposto de Importação','0,00'],['bcIS','Imposto Seletivo','0,00'],['bcDesc','Desconto incondicional','0,00'],['bcPIS','PIS','0,00'],['bcCOFINS','COFINS','0,00'],['bcICMS','ICMS','0,00'],['bcICMSDest','ICMS UF destino','0,00'],['bcFCP','FCP','0,00'],['bcFCPDest','FCP UF destino','0,00'],['bcICMSMono','ICMS monofásico','0,00'],['bcISSQN','ISSQN','0,00']];
+ const componentsForm='<details class="tax-advanced item-advanced"><summary>Componentes detalhados da base · opcional</summary><div class="item-fields">'+componentFields.map(([key,label,ph])=>itemField(i,key,label,ph)).join('')+'</div><p>Quando preenchidos, estes valores são enviados ao motor da Receita para cálculo ou conferência cruzada da base CBS/IBS. Não há fórmula local.</p></details>';
  return '<article class="item-card" data-item="'+i+'"><div class="item-card-head"><span class="item-ident"><span class="item-number">'+String(i+1).padStart(2,'0')+'</span><strong>Item '+(i+1)+'</strong></span>'+(state.items.length>1?'<button class="delete-item" type="button" data-remove="'+i+'">'+icon('trash')+' Remover</button>':'')+'</div><div class="item-fields">'+
  '<div class="field"><span>Tipo de item</span><div class="switch-kind"><button type="button" class="kind-button" data-kind="produto" data-i="'+i+'" aria-pressed="'+(item.kind==='produto')+'">Produto / mercadoria</button><button type="button" class="kind-button" data-kind="servico" data-i="'+i+'" aria-pressed="'+(item.kind==='servico')+'">Serviço</button></div></div>'+
  itemField(i,nomenclature,item.kind==='produto'?'NCM do produto (8 dígitos)':'NBS do serviço (9 dígitos)',item.kind==='produto'?'10063021':'122011200')+
@@ -194,7 +197,7 @@ function cardHTML(item,i){
  itemField(i,'base','Base de cálculo IBS/CBS (R$)','1.200,00','base-wide')+
  itemField(i,'quantity','Quantidade (opcional)','1')+
  itemField(i,'unit','Unidade (opcional)','UN')+'</div><div class="item-assist-row"><button type="button" class="inline-lookup" data-lookup-item="'+i+'">Conferir classificação tributária na base oficial ↗</button></div>'+
- rateForm + '<button class="is-toggle" type="button" data-is-toggle="'+i+'" aria-expanded="'+item.hasIS+'">'+icon(item.hasIS?'x':'plus')+(item.hasIS?' Retirar Imposto Seletivo':' Informar Imposto Seletivo')+'</button>'+isForm+'</article>';
+ rateForm + '<button class="is-toggle" type="button" data-is-toggle="'+i+'" aria-expanded="'+item.hasIS+'">'+icon(item.hasIS?'x':'plus')+(item.hasIS?' Retirar Imposto Seletivo':' Informar Imposto Seletivo')+'</button>'+isForm+regularForm+componentsForm+'</article>';
 }
 function renderItems(){
  $('items-host').innerHTML=state.items.map(cardHTML).join('');
@@ -227,8 +230,8 @@ $('items-host').addEventListener('click',e=>{
 });
 function addItem(){if(state.items.length>=50){toast('Limite de 50 itens por operação nesta interface.');return}invalidateStrict();state.items.push(initialItem());renderItems();$('items-host').lastElementChild?.scrollIntoView({behavior:'smooth',block:'nearest'})}
 $('add-item').addEventListener('click',addItem);$('add-item-bottom').addEventListener('click',addItem);
-$('sample-operation').addEventListener('click',()=>{$('op-date').value='2027-03-10';$('op-time').value='10:00';$('op-uf').value='RS';$('op-city').value='4314902';$('op-doc').value='';state.items=sampleItems();invalidateStrict();renderItems();toast('Exemplo da documentação preenchido. Alíquotas de simulação.')});
-['op-date','op-time','op-uf','op-city','op-doc'].forEach(id=>$(id).addEventListener('change',()=>{invalidateStrict();if(id==='op-date'){renderItems()}else updateReview()}));
+$('sample-operation').addEventListener('click',()=>{$('op-date').value='2027-03-10';$('op-time').value='10:00';$('op-uf').value='RS';$('op-city').value='4314902';$('op-doc').value='';$('op-offset').value='-03:00';$('op-gov-ente').value='';$('op-gov-oper').value='';state.items=sampleItems();invalidateStrict();renderItems();toast('Exemplo da documentação preenchido. Alíquotas de simulação.')});
+['op-date','op-time','op-uf','op-city','op-doc','op-offset','op-gov-ente','op-gov-oper'].forEach(id=>$(id).addEventListener('change',()=>{invalidateStrict();if(id==='op-date'){renderItems()}else updateReview()}));
 $('op-city').addEventListener('input',()=>{invalidateStrict();updateReview()});
 function numberString(value,{field='Valor',allowBlank=true,fraction=2,maxInteger=13,percent=false}={}){
  const raw=String(value??'').trim().replace(/\s/g,'');
@@ -257,7 +260,19 @@ function makeOperation(){
   if(!/^\d{3}$/.test(item.cst))throw Error('Item '+num+': CST deve conter 3 dígitos.');
   if(!/^\d{6}$/.test(item.cClassTrib))throw Error('Item '+num+': cClassTrib deve conter 6 dígitos.');
   const o={numero:num,[nomenclature]:value,cst:item.cst,cClassTrib:item.cClassTrib};
-  const base=numberString(item.base,{field:'base de cálculo do item '+num,allowBlank:item.hasIS});
+  const regularCst=String(item.regularCst||'').trim(),regularClass=String(item.regularClass||'').trim();
+  if(regularCst||regularClass){
+   if(!/^\d{3}$/.test(regularCst)||!/^\d{6}$/.test(regularClass))throw Error('Item '+num+': tributação regular exige CST de 3 dígitos e cClassTrib de 6 dígitos.');
+   o.tributacaoRegular={cst:regularCst,cClassTrib:regularClass};
+  }
+  const components=[['bcProd','vProd'],['bcFrete','vFrete'],['bcSeg','vSeg'],['bcOutro','vOutro'],['bcII','vII'],['bcIS','vIS'],['bcDesc','vDesc'],['bcPIS','vPIS'],['bcCOFINS','vCOFINS'],['bcICMS','vICMS'],['bcICMSDest','vICMSUFDest'],['bcFCP','vFCP'],['bcFCPDest','vFCPUFDest'],['bcICMSMono','vICMSMono'],['bcISSQN','vISSQN']];
+  const bc={};
+  for(const [field,key] of components){
+    const amount=numberString(item[field],{field:key+' do item '+num});
+    if(amount!==null)bc[key]=amount;
+  }
+  if(Object.keys(bc).length)o.gComponentesBC=bc;
+  const base=numberString(item.base,{field:'base de cálculo do item '+num,allowBlank:item.hasIS||!!o.gComponentesBC});
   if(base!==null)o.baseCalculo=base;
   const quantity=numberString(item.quantity,{field:'quantidade do item '+num,fraction:4,maxInteger:11});
   if(quantity!==null)o.quantidade=quantity;
@@ -285,8 +300,12 @@ function makeOperation(){
   }
   return o;
  });
- const o={id:uniqueId(),versao:'1.0.0',dhFatoGerador:d+'T'+tm+':00-03:00',municipio:Number(city),uf};
+ const offset=$('op-offset').value;if(!['-02:00','-03:00','-04:00','-05:00'].includes(offset))throw Error('Selecione um fuso válido.');
+ const o={id:uniqueId(),versao:'1.0.0',dhFatoGerador:d+'T'+tm+':00'+offset,municipio:Number(city),uf};
  const doc=$('op-doc').value;if(doc)o.tpDoc=Number(doc);
+ const ente=$('op-gov-ente').value,opGov=$('op-gov-oper').value;
+ if(ente){o.gCompraGov={tpEnteGov:Number(ente)};if(opGov)o.gCompraGov.tpOperGov=Number(opGov)}
+ else if(opGov)throw Error('Selecione o ente adquirente quando informar um tipo de compra governamental.');
  o.itens=items;
  return o;
 }
