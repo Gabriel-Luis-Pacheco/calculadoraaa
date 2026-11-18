@@ -1,0 +1,4 @@
+REGIME_REGULAR | https://github.com/ReceitaFederal/calculadora-rtc-regime-regular | 150cccbe414d4a5edea703e4f7a424af5aa222c7
+SIMPLES_NACIONAL | https://github.com/ReceitaFederal/calculadora-rtc-simples-nacional | c5b0f01c8351c3f0d0795cc617b29d233e9f98df
+Snapshot Regime Regular: 150cccbe414d4a5edea703e4f7a424af5aa222c7
+Snapshot Simples Nacional: c5b0f01c8351c3f0d0795cc617b29d233e9f98df
