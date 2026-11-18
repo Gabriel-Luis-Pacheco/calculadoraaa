@@ -334,7 +334,7 @@ $('lookup-form').addEventListener('submit',async e=>{
    else params[spec.code]=val;
   }
   if(spec.extra)params[spec.extra]=digits($('lookup-extra').value,spec.extraLen||6,friendlyKey(spec.extra));
-  if(spec.uf){const uf=$('lookup-uf').value;if(!uf)throw Error('Selecione a UF.');params[route==='dados-abertos/aliquota-uf'?'codigoUf':'siglaUf']=route==='aliquota-uf'?UF_CODES[uf]:uf}
+  if(spec.uf){const uf=$('lookup-uf').value;if(!uf)throw Error('Selecione a UF.');params[route==='aliquota-uf'?'codigoUf':'siglaUf']=route==='aliquota-uf'?UF_CODES[uf]:uf}
   if(spec.mun)params.codigoMunicipio=digits($('lookup-mun').value,7,'Código IBGE');
   const fullRoute=route.startsWith('../nfse/')?route.slice(3):'dados-abertos/'+route;
   setPending(button,true);
