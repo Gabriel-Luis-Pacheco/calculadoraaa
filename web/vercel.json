@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "rewrites": [
+    {
+      "source": "/oficial",
+      "destination": "/oficial.html"
+    },
+    {
+      "source": "/simples",
+      "destination": "/simples.html"
+    }
+  ]
+}

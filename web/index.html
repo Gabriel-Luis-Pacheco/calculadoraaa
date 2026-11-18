@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Calculadora RTC — impacto da Reforma Tributária no custo</title>
+  <meta name="description" content="Simule o impacto de CBS e IBS no custo de aquisição de mercadorias, serviços e fretes, de 2026 para 2027.">
+  <meta name="theme-color" content="#0f1b3d">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230f1b3d'/%3E%3Cpath d='M8 21l5-6 4 3 7-9' stroke='%23f2b53d' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-row">
+      <div class="brand">
+        <span class="mark" aria-hidden="true"></span>
+        <div>
+          <h1>Calculadora RTC</h1>
+          <p>Reforma Tributária · impacto no custo de aquisição</p>
+        </div>
+      </div>
+      <nav class="tabs" id="tabs" role="tablist" aria-label="Tipo de aquisição"></nav><a href="/oficial.html" style="color:#f2b53d;font-size:12px;padding:8px 10px;border:1px solid #67799f;border-radius:7px;text-decoration:none;white-space:nowrap">Operações fiscais ↗</a>
+    </div>
+  </header>
+
+  <main class="wrap" id="main">
+    <section class="intro">
+      <h2 id="title"></h2>
+      <p id="blurb"></p>
+    </section>
+
+    <div class="layout">
+      <aside class="panel" aria-labelledby="prem-h">
+        <div class="panel-head">
+          <h3 id="prem-h">Premissas</h3>
+          <button class="ghost" id="reset" type="button">Restaurar padrão</button>
+        </div>
+        <p class="regime-caption">Regime do fornecedor e incidência de PIS/COFINS</p>
+        <div class="seg" id="regime" role="radiogroup" aria-label="Regime do fornecedor e incidência de PIS/COFINS"></div>
+        <form id="fields" autocomplete="off" onsubmit="return false"></form>
+        <button class="ghost wide" id="share" type="button">Copiar link deste cenário</button>
+      </aside>
+
+      <section class="results" aria-live="polite">
+        <div class="kpis" id="kpis"></div>
+        <div id="detail"></div>
+        <div id="notes"></div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="wrap foot">
+    <p>Simulação baseada na planilha RTC. Valores ilustrativos, sem caráter de parecer tributário. Alíquotas e regras da transição devem ser conferidas na legislação vigente.</p>
+  </footer>
+
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>

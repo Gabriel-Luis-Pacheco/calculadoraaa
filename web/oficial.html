@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light"><meta name="theme-color" content="#142233">
+<title>Calculadora RTC — Ambiente fiscal</title>
+<meta name="description" content="Calcule CBS, IBS e Imposto Seletivo, confira bases de cálculo e consulte tabelas fiscais com formulários para profissionais da área tributária.">
+<link rel="stylesheet" href="/styles-oficial.css?v=20261118-autoconnect">
+</head>
+<body>
+<svg class="svg-defs" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+<symbol id="ic-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
+<symbol id="ic-file" viewBox="0 0 24 24"><path d="M8 3h7l5 5v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M15 3v6h5M8 13h8M8 17h5"/></symbol>
+<symbol id="ic-calc" viewBox="0 0 24 24"><rect x="5" y="2.5" width="14" height="19" rx="2"/><path d="M8.5 7h7M8.5 12h2M13.5 12h2M8.5 16.5h2M13.5 16.5h2"/></symbol>
+<symbol id="ic-search" viewBox="0 0 24 24"><circle cx="10.6" cy="10.6" r="6.6"/><path d="m16 16 5 5"/></symbol>
+<symbol id="ic-code" viewBox="0 0 24 24"><path d="m8 5-6 7 6 7M16 5l6 7-6 7M13.5 3l-3 18"/></symbol>
+<symbol id="ic-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><path d="M9.5 9a2.8 2.8 0 0 1 5.4 1.1c0 2-2.9 2.4-2.9 4.4M12 17.9h.01"/></symbol>
+<symbol id="ic-arrow" viewBox="0 0 24 24"><path d="M4 12h16M13 5l7 7-7 7"/></symbol>
+<symbol id="ic-plus" viewBox="0 0 24 24"><path d="M12 4v16M4 12h16"/></symbol>
+<symbol id="ic-check" viewBox="0 0 24 24"><path d="m4 12 5 5L20 6"/></symbol>
+<symbol id="ic-x" viewBox="0 0 24 24"><path d="M5 5 19 19M19 5 5 19"/></symbol>
+<symbol id="ic-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 4h4M7 7l1 14h8l1-14M10 11v6M14 11v6"/></symbol>
+<symbol id="ic-download" viewBox="0 0 24 24"><path d="M12 3v13M7 11l5 5 5-5M4 19h16"/></symbol>
+<symbol id="ic-chevron" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+<symbol id="ic-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 10.5V17M12 7h.01"/></symbol>
+<symbol id="ic-lock" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 1 1 8 0v3"/></symbol>
+<symbol id="ic-upload" viewBox="0 0 24 24"><path d="M12 16V3M6 9l6-6 6 6M4 16v4h16v-4"/></symbol>
+</svg>
+<a href="#main" class="skip-link">Ir para o conteúdo</a>
+<div class="shell">
+<aside class="sidebar" aria-label="Menu principal">
+  <div class="brand"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span><strong>RTC<span class="brand-dot">.</span></strong><small>AMBIENTE FISCAL</small></span></div>
+  <div class="side-label">FERRAMENTAS DE TRABALHO</div>
+  <nav class="nav-links">
+    <button type="button" class="nav-button active" data-page="operacao" aria-current="page"><svg><use href="#ic-grid"/></svg><span>Calcular operação<small>CBS, IBS e IS</small></span></button>
+    <button type="button" class="nav-button" data-page="bases"><svg><use href="#ic-calc"/></svg><span>Base de cálculo<small>NF-e, NFC-e e NFS-e</small></span></button>
+    <button type="button" class="nav-button" data-page="consultas"><svg><use href="#ic-search"/></svg><span>Consulta tributária<small>CST, cClassTrib e tabelas</small></span></button>
+    <button type="button" class="nav-button" data-page="xml"><svg><use href="#ic-file"/></svg><span>Conferir XML<small>Geração e validação</small></span></button>
+  </nav>
+  <div class="side-label side-label-second">SOBRE O AMBIENTE</div>
+  <nav class="nav-links">
+    <button type="button" class="nav-button" data-page="referencias"><svg><use href="#ic-help"/></svg><span>Fontes e orientação</span></button>
+  </nav>
+  <div class="side-spacer"></div>
+  <div class="sidebar-engine"><span class="sidebar-engine-tag">MOTOR DE CÁLCULO</span><strong>Receita Federal · v1.6.1</strong><p>Código aberto executado em ambiente independente.</p><span class="sidebar-micro">Regime Regular · LC 214/2025</span></div>
+  <a href="/" class="side-back">← Voltar ao simulador de impacto</a>
+</aside>
+<div class="page-frame">
+<header class="topbar">
+  <div class="top-location"><span class="top-location-dot"></span><span>Calculadora RTC</span><span class="slash">/</span><strong id="top-section">Calcular operação</strong></div>
+  <div class="top-actions"><span class="top-note">FERRAMENTA DE APOIO TRIBUTÁRIO</span><button type="button" class="connection-trigger" id="connection-trigger"><span class="connection-dot"></span><span id="connection-label">Verificando motor…</span><svg><use href="#ic-chevron"/></svg></button></div>
+</header>
+<main id="main" class="main-content">
+  <div id="engine-notice" class="engine-notice" hidden role="status" aria-live="polite">
+    <span class="engine-notice-icon" aria-hidden="true"><svg><use href="#ic-info"/></svg></span>
+    <div class="engine-notice-copy"><strong id="engine-notice-title">Motor fiscal conectado automaticamente</strong><p id="engine-notice-text">O acesso é automático. O Java pode precisar de alguns minutos para iniciar no Render gratuito.</p></div>
+    <button type="button" id="engine-notice-action" class="outline-button compact">Verificar novamente</button>
+  </div>
+  <section class="screen active" data-screen="operacao" aria-labelledby="op-title">
+    <div class="page-heading"><div><span class="eyebrow">01 / CÁLCULO DE TRIBUTOS</span><h1 id="op-title">Calcular uma operação fiscal<span class="title-period">.</span></h1><p>Informe os dados da operação e dos itens. O motor calcula CBS, IBS e, quando aplicável, Imposto Seletivo.</p></div><button class="text-action" id="sample-operation" type="button"><svg><use href="#ic-file"/></svg> Usar exemplo preenchido</button></div>
+    <div class="process-strip" aria-label="Etapas do cálculo"><span class="process-current"><b>01</b> Dados da operação</span><i></i><span><b>02</b> Itens e tributos</span><i></i><span><b>03</b> Conferência</span></div>
+    <div class="section-layout">
+      <div class="primary-column">
+        <section class="surface">
+          <div class="section-top"><div class="numbered-title"><span class="num">01</span><div><h2>Dados da operação</h2><p>Identifique onde e quando ocorreu o fato gerador.</p></div></div></div>
+          <div class="fields-grid">
+            <label class="field">Data do fato gerador<input id="op-date" type="date" required value="2027-03-10"></label>
+            <label class="field">Horário<input id="op-time" type="time" required value="10:00"><small>Horário de Brasília (UTC−3)</small></label>
+            <label class="field">UF da operação<select id="op-uf" required><option value="RS">Rio Grande do Sul (RS)</option><option value="SP">São Paulo (SP)</option><option value="SC">Santa Catarina (SC)</option><option value="PR">Paraná (PR)</option><option value="MG">Minas Gerais (MG)</option><option value="RJ">Rio de Janeiro (RJ)</option><option value="BA">Bahia (BA)</option><option value="DF">Distrito Federal (DF)</option><option value="AC">Acre (AC)</option><option value="AL">Alagoas (AL)</option><option value="AP">Amapá (AP)</option><option value="AM">Amazonas (AM)</option><option value="CE">Ceará (CE)</option><option value="ES">Espírito Santo (ES)</option><option value="GO">Goiás (GO)</option><option value="MA">Maranhão (MA)</option><option value="MT">Mato Grosso (MT)</option><option value="MS">Mato Grosso do Sul (MS)</option><option value="PA">Pará (PA)</option><option value="PB">Paraíba (PB)</option><option value="PE">Pernambuco (PE)</option><option value="PI">Piauí (PI)</option><option value="RN">Rio Grande do Norte (RN)</option><option value="RO">Rondônia (RO)</option><option value="RR">Roraima (RR)</option><option value="SE">Sergipe (SE)</option><option value="TO">Tocantins (TO)</option></select></label>
+            <label class="field">Município — código IBGE<input id="op-city" inputmode="numeric" maxlength="7" pattern="[0-9]{7}" placeholder="Ex.: 4314902" required value="4314902"><small>Exemplo: Porto Alegre = 4314902</small></label>
+            <label class="field full">Documento fiscal<select id="op-doc"><option value="">Não vincular a um modelo específico</option><option value="55">NF-e — Nota Fiscal eletrônica</option><option value="65">NFC-e — Nota Fiscal de Consumidor</option></select><small>Opcional. Quando informado, o motor valida a compatibilidade do documento com a classificação.</small></label>
+          </div>
+        </section>
+        <section class="surface surface-items">
+          <div class="section-top"><div class="numbered-title"><span class="num">02</span><div><h2>Itens da operação <span class="count-bubble" id="item-count">1</span></h2><p>Cadastre cada produto ou serviço com sua situação e classificação tributária.</p></div></div><button id="add-item" class="outline-button compact" type="button"><svg><use href="#ic-plus"/></svg> Adicionar item</button></div>
+          <div id="items-host" class="items-host" aria-live="polite"></div>
+          <div class="item-foot"><span>Os códigos NCM, NBS, CST e cClassTrib são verificados pelo motor, conforme a vigência.</span><button type="button" id="add-item-bottom" class="text-action"><svg><use href="#ic-plus"/></svg> Novo item</button></div>
+        </section>
+        <div class="run-panel"><div><strong>Pronto para conferir?</strong><p>Os valores vêm do motor fiscal, não de estimativas feitas nesta página.</p></div><div class="run-buttons"><button class="outline-button" type="button" id="strict-run">Cálculo integral</button><button class="primary-button" type="button" id="operation-run">Calcular tributos <svg><use href="#ic-arrow"/></svg></button></div></div>
+      </div>
+      <aside class="right-column" aria-label="Resumo de conferência">
+       <div class="checklist-box"><div class="side-heading"><span>CONFERÊNCIA</span><svg><use href="#ic-check"/></svg></div><h3>Revise antes de calcular</h3><div class="review-line"><span>Fato gerador</span><strong id="review-date">10/03/2027</strong></div><div class="review-line"><span>Local</span><strong id="review-location">RS · 4314902</strong></div><div class="review-line"><span>Itens cadastrados</span><strong id="review-items">1 item</strong></div><div class="review-line"><span>Alíquotas</span><strong id="review-rates">Informadas para 2027</strong></div><div class="review-foot"><svg><use href="#ic-info"/></svg><span>O resumo mostra os dados preenchidos, não calcula tributos antecipadamente.</span></div></div>
+       <div class="insight-box"><div class="insight-symbol">i</div><strong>Alíquotas em 2027</strong><p>O componente da Receita exige alíquotas nominais informadas para operações a partir de 2027. Nesses casos, o resultado é identificado como <b>simulado</b>.</p><a href="https://github.com/ReceitaFederal/calculadora-rtc-regime-regular/blob/main/docs/exemplos.md" target="_blank" rel="noopener noreferrer">Entender a regra <span aria-hidden="true">↗</span></a></div>
+      </aside>
+    </div>
+  </section>
+  <section class="screen" data-screen="bases" aria-labelledby="base-title">
+    <div class="page-heading"><div><span class="eyebrow">02 / BASES TRIBUTÁRIAS</span><h1 id="base-title">Base de cálculo unificada<span class="title-period">.</span></h1><p>Preencha os valores da nota ou serviço. A Receita determina o que compõe cada base segundo o ano do fato gerador.</p></div><button type="button" class="text-action" id="base-sample"><svg><use href="#ic-file"/></svg> Usar exemplo da Receita</button></div>
+    <div class="surface">
+      <div class="section-top"><div class="numbered-title"><span class="num">01</span><div><h2>Tipo de documento</h2><p>Os campos mudam de acordo com o documento selecionado.</p></div></div></div>
+      <div class="choice-row" role="radiogroup" aria-label="Tipo de documento fiscal"><label class="choice"><input type="radio" name="base-mode" value="nfe" checked><span><strong>NF-e / NFC-e</strong><small>Mercadorias e serviços</small></span></label><label class="choice"><input type="radio" name="base-mode" value="nfse"><span><strong>NFS-e</strong><small>Serviços municipais</small></span></label></div>
+      <div id="base-nfe-fields">
+        <div class="fields-grid section-fields">
+          <label class="field">Ano do fato gerador<input id="base-year" type="number" min="2026" max="2100" value="2027"></label>
+          <label class="field">Documento<select id="base-doc"><option value="55">NF-e (modelo 55)</option><option value="65">NFC-e (modelo 65)</option></select></label>
+          <label class="field full">Natureza<select id="base-nature"><option value="bem">Mercadoria / bem</option><option value="servico">Serviço</option></select></label>
+        </div>
+        <div class="subsection-title">Valores da operação <span>em R$</span></div>
+        <div class="money-grid" id="base-money-fields"></div>
+      </div>
+      <div id="base-nfse-fields" hidden>
+        <div class="fields-grid section-fields">
+          <label class="field">Ano do fato gerador<input id="nfse-year" type="number" min="2026" max="2100" value="2027"></label>
+          <label class="field">Situação da operação<select id="nfse-status"><option value="comum">Serviço comum</option><option value="salaoParceiro">Salão-parceiro</option><option value="locacao9903">Locação de imóveis (99.03)</option></select></label>
+          <label class="field">Opção pelo Simples Nacional<select id="nfse-simples"><option value="1">Não optante</option><option value="2">MEI</option><option value="3">Optante ME/EPP</option><option value="4">Optante pendente</option></select></label>
+          <label class="field" id="nfse-regime-wrap" hidden>Apuração IBS/CBS no Simples<select id="nfse-regime"><option value="1">IBS e CBS pelo Simples</option><option value="2">CBS pelo Simples, IBS regular</option><option value="3">Ambos no regime regular</option></select></label>
+        </div>
+        <div class="subsection-title">Valores da prestação <span>em R$</span></div><div class="money-grid" id="nfse-money-fields"></div>
+        <div id="nfse-locacao-fields" hidden><div class="subsection-title">Dados específicos da locação <span>obrigatórios</span></div><div class="money-grid" id="nfse-locacao-grid"></div></div>
+        <p class="micro-note">Documentos de ajuste da NFS-e ainda não são preenchidos por esta interface. Para operações com ajustes, confira a documentação do motor antes de utilizar o resultado.</p>
+      </div>
+    </div>
+    <div class="run-panel"><div><strong>Base tributária por regime</strong><p>O resultado distingue regime geral, Imposto Seletivo e Simples Nacional.</p></div><button class="primary-button" id="base-run" type="button">Calcular bases <svg><use href="#ic-arrow"/></svg></button></div>
+  </section>
+  <section class="screen" data-screen="consultas" aria-labelledby="lookup-title">
+    <div class="page-heading"><div><span class="eyebrow">03 / CONSULTA FISCAL</span><h1 id="lookup-title">Consulte o enquadramento<span class="title-period">.</span></h1><p>Localize classificações, situação tributária, NCM, NBS, fundamentos legais e alíquotas na base do motor RTC.</p></div></div>
+    <div class="surface">
+      <div class="section-top"><div class="numbered-title"><span class="num">01</span><div><h2>O que você quer consultar?</h2><p>Escolha uma tabela e informe o código quando necessário.</p></div></div></div>
+      <div class="fields-grid">
+        <label class="field full">Tabela ou informação<select id="lookup-kind"><option value="classificacoes-tributarias/cbs-ibs/class-trib/">Classificação tributária — cClassTrib</option><option value="situacoes-tributarias/cbs-ibs">Situações tributárias — CST</option><option value="classificacoes-tributarias/cbs-ibs">Lista de classificações CBS/IBS</option><option value="classificacoes-tributarias/imposto-seletivo">Classificações do Imposto Seletivo</option><option value="ncm">NCM — produtos</option><option value="nbs">NBS — serviços</option><option value="nbs-aplicaveis">NBS aplicáveis a um cClassTrib</option><option value="fundamentacoes-legais">Fundamentações legais</option><option value="aliquota-uniao">Alíquota de referência — União</option><option value="aliquota-uf">Alíquota de referência — UF</option><option value="aliquota-municipio">Alíquota de referência — município</option><option value="ufs">Unidades da Federação</option><option value="ufs/municipios">Municípios por UF</option><option value="dfe/grupos">Grupos de DF-e</option><option value="versao">Versão da base fiscal</option></select></label>
+        <label class="field" id="lookup-code-wrap">Código da pesquisa<input id="lookup-code" placeholder="Ex.: 200028" inputmode="numeric"></label>
+        <label class="field" id="lookup-date-wrap">Data de referência<input id="lookup-date" type="date" value="2027-01-01"></label>
+      </div>
+      <div class="notice-note"><svg><use href="#ic-info"/></svg><p>A consulta utiliza as tabelas instaladas no motor. As alíquotas de referência podem estar indisponíveis para determinados anos.</p></div>
+      <button class="primary-button" type="button" id="lookup-run">Consultar tabela <svg><use href="#ic-arrow"/></svg></button>
+    </div>
+  </section>
+  <section class="screen" data-screen="xml" aria-labelledby="xml-title">
+    <div class="page-heading"><div><span class="eyebrow">04 / DOCUMENTO FISCAL ELETRÔNICO</span><h1 id="xml-title">Gerar ou validar XML<span class="title-period">.</span></h1><p>Confira um grupo tributário pelo esquema oficial ou gere o XML a partir do resultado de um cálculo integral.</p></div></div>
+    <div class="surface">
+      <div class="section-top"><div class="numbered-title"><span class="num">01</span><div><h2>Escolha a operação</h2><p>O motor realiza a validação XSD; não se trata apenas de verificar a formatação do arquivo.</p></div></div></div>
+      <div class="choice-row"><label class="choice"><input type="radio" name="xml-mode" value="validate" checked><span><strong>Validar arquivo XML</strong><small>Verificar conformidade XSD</small></span></label><label class="choice"><input type="radio" name="xml-mode" value="generate"><span><strong>Gerar XML</strong><small>Usar último cálculo integral</small></span></label></div>
+      <div class="fields-grid section-fields">
+        <label class="field">Modelo fiscal<select id="xml-kind"><option value="nfe">NF-e</option><option value="nfce">NFC-e</option><option value="cte">CT-e</option><option value="cte-simplificado">CT-e simplificado</option><option value="bpe">BP-e</option><option value="nf3e">NF3-e</option></select></label>
+        <label class="field" id="xml-sub-wrap">Conteúdo a validar<select id="xml-sub"><option value="grupo">Grupo tributário</option><option value="nota">Documento completo</option></select></label>
+      </div>
+      <div id="xml-upload-wrap" class="drop-zone"><svg><use href="#ic-upload"/></svg><strong>Selecione um arquivo .xml</strong><p>O arquivo será enviado ao motor somente quando você solicitar a validação.</p><label class="file-button">Escolher arquivo<input id="xml-file" type="file" accept=".xml,application/xml,text/xml" hidden></label><div class="selected-file" id="selected-file">Nenhum arquivo selecionado</div></div>
+      <div id="xml-generate-wrap" class="notice-note" hidden><svg><use href="#ic-info"/></svg><p id="xml-generate-hint">Faça um <b>cálculo integral</b> na primeira ferramenta antes de gerar o XML. Os dados da operação serão utilizados para gerar o arquivo.</p></div>
+      <div class="buttons-row"><button id="xml-run" class="primary-button" type="button">Validar XML <svg><use href="#ic-arrow"/></svg></button><button id="xml-save" class="outline-button" type="button" disabled><svg><use href="#ic-download"/></svg> Baixar XML gerado</button></div>
+    </div>
+  </section>
+  <section class="screen" data-screen="referencias" aria-labelledby="refs-title">
+    <div class="page-heading"><div><span class="eyebrow">05 / REFERÊNCIAS</span><h1 id="refs-title">Fundamento e transparência<span class="title-period">.</span></h1><p>Entenda o que o cálculo representa, a procedência das regras e os limites do ambiente.</p></div></div>
+    <div class="reference-stack">
+      <article><div class="ref-index">01</div><div><h2>Código-fonte da Receita Federal</h2><p>A API de Regime Regular é um componente público em Java, executado em infraestrutura própria. Não é uma API hospedada ou um serviço operado pela Receita Federal.</p><a href="https://github.com/ReceitaFederal/calculadora-rtc-regime-regular" target="_blank" rel="noopener noreferrer">Repositório oficial ↗</a></div></article>
+      <article><div class="ref-index">02</div><div><h2>Simulação e resultado oficial do motor</h2><p>Os resultados com alíquotas nominais fornecidas para 2027 em diante são classificados pelo motor como <b>CALCULO_SIMULADO</b>. A interface mantém esse aviso; não transforma simulação em apuração.</p><a href="https://github.com/ReceitaFederal/calculadora-rtc-regime-regular/blob/main/docs/exemplos.md" target="_blank" rel="noopener noreferrer">Exemplos e limitações ↗</a></div></article>
+      <article><div class="ref-index">03</div><div><h2>Vigência e base de referência</h2><p>Consulta de CST, cClassTrib, NCM/NBS e bases de cálculo usa os dados da versão embarcada no serviço Java. Confira o período de vigência antes de aplicar os resultados.</p><a href="/integracao/README.md" target="_blank" rel="noopener noreferrer">Infraestrutura e versão ↗</a></div></article>
+      <article><div class="ref-index">04</div><div><h2>Privacidade e responsabilidade</h2><p>O navegador não mantém histórico persistente das operações. Quando você solicita o cálculo, os dados seguem para os serviços configurados na Vercel e no Render. Não há transmissão ou autorização de documentos fiscais.</p><a href="/" target="_self">Simulador econômico ↗</a></div></article>
+    </div>
+  </section>
+  <section id="results" class="results-section" hidden aria-labelledby="results-title" tabindex="-1">
+    <div class="results-heading"><div><span class="eyebrow">RETORNO DO MOTOR RTC</span><h2 id="results-title">Resultado da consulta</h2><p id="results-meta">Confira a natureza do resultado e os avisos antes de utilizar as informações.</p></div><div class="results-actions"><button type="button" id="results-csv" class="outline-button" disabled><svg><use href="#ic-download"/></svg> Exportar planilha CSV</button><button type="button" id="results-raw" class="quiet-button" title="Baixa a resposta técnica em JSON; não é necessário para usar a calculadora">Dados técnicos ↓</button></div></div>
+    <div id="results-body"></div>
+  </section>
+</main>
+<footer class="bottom-footer"><span>Calculadora RTC · Apoio à análise tributária</span><span>Componente de código aberto da Receita Federal · Instância independente</span></footer>
+</div></div>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+<script src="/src/oficial.js?v=20261118-autoconnect" defer></script>
+</body>
+</html>
