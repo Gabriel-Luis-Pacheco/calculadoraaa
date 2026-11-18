@@ -37,7 +37,7 @@ test('Regime Regular: Compra Gov + tributacaoRegular + gComponentesBC + fuso for
  assert.deepEqual(operation.gCompraGov,{tpEnteGov:4,tpOperGov:5});
  assert.deepEqual(operation.itens[0].tributacaoRegular,{cst:'000',cClassTrib:'000001'});
  assert.deepEqual(operation.itens[0].gComponentesBC,{vProd:'1000.00',vFrete:'50.00',vICMS:'180.00'});
- assert.equal(operation.itens[0].baseCalculo,'100');
+ assert.equal(operation.itens[0].baseCalculo,'100.00');
  assert.equal(operation.itens[1].tributacaoRegular,undefined);
  assert.equal(operation.itens[1].gComponentesBC,undefined);
  assert.match($('results-body').textContent,/40,00/);
