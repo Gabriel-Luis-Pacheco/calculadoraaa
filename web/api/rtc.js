@@ -3,12 +3,13 @@
 
 export const config={maxDuration:60};
 
-const ALLOWED_GET=/^(?:dados-abertos\/[a-zA-Z0-9-]+(?:\/[a-zA-Z0-9-]+){0,5}|observabilidade\/erros|xml\/(?:generate|validate))$/;
+const ALLOWED_GET=/^(?:dados-abertos\/[a-zA-Z0-9-]+(?:\/[a-zA-Z0-9-]+){0,6}|observabilidade\/erros|xml\/(?:generate|validate)|nfse\/(?:local-operacao|indicador-operacao|locais-fornecimento|locais-incidencia|situacoes-classificacoes-tributarias))$/;
 const ALLOWED_POST=new Set([
  'regime-geral','observabilidade/regime-geral',
  'base-calculo/base-calculo-unificada',
  'base-calculo/base-calculo-unificada-nfse',
- 'base-calculo/base-calculo-is','base-calculo/base-calculo-cibs',
+ 'base-calculo/is-mercadorias','base-calculo/cbs-ibs-mercadorias',
+ 'nfse/base-calculo','nfse/indicador-operacao/validate','pedagio',
  'xml/generate','xml/validate'
 ]);
 
