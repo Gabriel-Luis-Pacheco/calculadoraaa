@@ -2,12 +2,24 @@
   "version": 2,
   "rewrites": [
     {
+      "source": "/",
+      "destination": "/painel.html"
+    },
+    {
+      "source": "/painel",
+      "destination": "/painel.html"
+    },
+    {
       "source": "/oficial",
-      "destination": "/oficial.html"
+      "destination": "/painel.html"
     },
     {
       "source": "/simples",
-      "destination": "/simples.html"
+      "destination": "/painel.html"
+    },
+    {
+      "source": "/simulador",
+      "destination": "/index.html"
     }
   ]
 }
