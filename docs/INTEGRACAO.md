@@ -34,9 +34,11 @@ Confira nos READMEs originais os caminhos do Swagger, os requisitos de execuçã
 
 Importe `calculadoraaa` na Vercel definindo **Root Directory = web**. Os caminhos previstos são:
 
-- `/`: simulador de impacto original.
-- `/oficial`: cálculo de Regime Regular, base, consultas e XML.
-- `/simples`: cálculo guiado do Simples Nacional por atividade e item.
+- `/`: painel unificado com simulador, Regime Regular, Simples, pedágio, NFS-e, bases, consultas e XML.
+- `/simulador`: simulador de impacto original preservado.
+- `/oficial`: abre o Regime Regular dentro do painel.
+- `/simples`: abre o Simples Nacional dentro do painel.
+- `/painel`: abre o mesmo ambiente integrado.
 - `/api/rtc`: proxy protegido ao motor de Regime Regular.
 - `/api/simples`: proxy ao motor próprio de Simples Nacional.
 - `/api/iss`: consulta ao snapshot público NFS-e de ISS de 03/09/2026.
@@ -54,7 +56,7 @@ Os proxies são públicos e têm controles básicos em memória. Antes de tráfe
 
 ## O que ainda depende de integração e homologação
 
-O repositório inclui o código completo das funcionalidades oficiais, porém **nem todos os endpoints têm uma tela gráfica individual**. Entre os fluxos que ainda exigem telas e testes próprios: pedágio, compra governamental, indicadores de crédito, bases IS separadas, regras mais específicas da NFS-e, detalhamento integral da memória de cálculo e formatos adicionais de XML.
+O repositório inclui o código completo dos motores oficiais. O painel agora oferece formulários específicos para pedágio, validação de indicadores de NFS-e, cálculo de base NFS-e, bases especiais CBS/IBS e IS, e um catálogo de consultas. **Nem todos os endpoints têm um formulário específico**: compras governamentais detalhadas, tributação regular especial por item, indicadores de crédito, alguns tratamentos avançados NFS-e, a memória integral e todos os formatos XML ainda exigem trabalho. O Simples depende de um serviço Java separado: veja `docs/PUBLICAR_SIMPLES_RENDER.md`.
 
 É necessário testar o motor com bancos corretos, confrontar resultados com os exemplos oficiais, distinguir itens CALCULADO/NAO_CALCULADO/INCONSISTENCIA_ENTRADA/NAO_IMPLEMENTADO e validar as versões e vigências antes de qualquer uso fiscal profissional.
 
