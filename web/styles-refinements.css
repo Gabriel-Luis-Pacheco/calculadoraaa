@@ -157,7 +157,7 @@ html.embedded .field-grid label,html.embedded .fields label,html.embedded .field
 @media(max-width:800px){
  .app-shell .rail{border-right:0;border-bottom:1px solid #355566}
  .app-shell .tool-nav{gap:5px}
- .app-shell .tool{width:148px;min-width:148px;max-width:148px;flex:0 0 148px;font-size:11px;padding-inline:9px;white-space:nowrap}
+ .app-shell .tool{width:140px;min-width:140px;max-width:140px;flex:0 0 140px;font-size:11px;padding-inline:9px;white-space:nowrap}
  .app-shell .tool small{color:#bfd0d9}
  .app-shell .topbar-heading strong{font-size:14px}
  .app-shell .status-copy strong{font-size:11px}
