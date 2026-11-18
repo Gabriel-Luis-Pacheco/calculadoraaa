@@ -1,0 +1,28 @@
+# Standalone Java 21 service for the Simples Nacional engine on Render.
+# Both Receita Federal engines remain separate; this image includes only Simples.
+# The Regime Regular Flyway migrations produce a version-aligned read-only SQLite DB.
+FROM maven:3.9.11-eclipse-temurin-21 AS db
+WORKDIR /workspace
+COPY motores/regime-regular/ ./regular/
+WORKDIR /workspace/regular
+RUN mkdir -p calculadora/db \
+    && mvn -B -ntp flyway:migrate -Dflyway.configFiles=./flyway/flyway-pro.conf \
+    && test -s calculadora/db/calculadora-pro.db
+
+FROM maven:3.9.11-eclipse-temurin-21 AS build
+WORKDIR /source
+COPY motores/simples-nacional/ ./
+COPY infra/simples/EngineKeyFilter.java ./src/main/java/br/gov/serpro/rtc/config/security/EngineKeyFilter.java
+RUN mvn -B -ntp -Dmaven.test.skip=true package && test -s target/api-simples-nacional.jar
+
+FROM eclipse-temurin:21-jre
+WORKDIR /app
+RUN mkdir -p /app/calculadora/db && chown -R 10001:0 /app
+COPY --chown=10001:0 --from=db /workspace/regular/calculadora/db/calculadora-pro.db /app/calculadora/db/calculadora-pro.db
+COPY --chown=10001:0 --from=build /source/target/api-simples-nacional.jar /app/app.jar
+USER 10001
+ENV RTC_ENGINE_PROTECTED=true
+ENV SPRING_PROFILES_ACTIVE=offline
+ENV JAVA_TOOL_OPTIONS="-XX:+UseSerialGC -XX:MaxRAMPercentage=72"
+EXPOSE 10000
+ENTRYPOINT ["/bin/sh","-c","exec java -Dserver.port=\${PORT:-10000} -jar /app/app.jar"]
