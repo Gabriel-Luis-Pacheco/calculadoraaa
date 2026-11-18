@@ -45,6 +45,12 @@ html.embedded #results-body{padding:13px!important}
 html.embedded .results-actions{gap:3px}
 
 /* Simples Nacional */
+/* Isolate the iframe's viewport: some browsers add 8px of document scroll
+   when the two-column application computes its layout. Only child panels scroll. */
+html.embedded body:has(#simples-form),
+html.embedded body:has(#simples-form) .app,
+html.embedded body:has(#simples-form) .frame{overflow:hidden!important;height:100dvh!important;min-height:0!important}
+
 html.embedded body:has(#simples-form) .app{display:block!important;width:100%;height:100dvh;min-height:0!important}
 html.embedded body:has(#simples-form) .sidebar,
 html.embedded body:has(#simples-form) .topbar,
