@@ -9,7 +9,7 @@ function setup(){
  const w=dom.window;const calls=[];const errors=[];
  w.addEventListener('error',e=>errors.push(e.message));
  w.AbortSignal.timeout=()=>new w.AbortController().signal;
- w.scrollTo=()=>{};w.HTMLElement.prototype.scrollIntoView=()=>{};
+ w.scrollTo=()=>{};w.HTMLElement.prototype.scrollIntoView=()=>{};w.matchMedia=()=>({matches:false});
  w.fetch=async(url,options={})=>{
   const u=new URL(url,'https://rtc.example');
   calls.push({route:u.searchParams.get('route'),method:options.method||'GET',body:options.body});
