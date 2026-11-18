@@ -1,0 +1,67 @@
+name: Checar integração fiscal na Vercel pública
+
+on:
+  push:
+    paths: [".github/workflows/producao-smoke.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  interface-and-motors:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verificar UI, Java Regular e Java Simples em produção
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          const host='https://rtc-calculadora-theta.vercel.app';
+          const doFetch=async(path,opt={})=>{
+           let last;
+           for(let i=0;i<4;i++){
+            try{
+             const r=await fetch(host+path,{cache:'no-store',signal:AbortSignal.timeout(65000),...opt});
+             const content=await r.text();
+             if(r.status>=500&&i<3){await new Promise(a=>setTimeout(a,12000));continue}
+             return {status:r.status,content, data:content.trim().startsWith('{')?JSON.parse(content):null};
+            }catch(e){last=e;if(i<3)await new Promise(a=>setTimeout(a,12000))}
+           }
+           throw last||new Error('Servidor não respondeu');
+          };
+          const root=await doFetch('/');
+          assert.equal(root.status,200);
+          assert.ok(root.content.includes('data-tool="bases-legado"'));
+          const routes=[...root.content.matchAll(/data-tool="([^"]+)"/g)].map(x=>x[1]);
+          assert.deepEqual(routes.slice(0,5),['impacto','regular','bases-legado','consultas-legado','xml']);
+          console.log('Menu original na ordem correta:',routes.slice(0,5).join(' / '));
+          const [simples,regular]=await Promise.all([
+           doFetch('/api/simples?route=versao'),
+           doFetch('/api/rtc?route=dados-abertos%2Fversao')
+          ]);
+          assert.equal(simples.status,200,'Motor Simples: '+simples.content.slice(0,260));
+          assert.equal(regular.status,200,'Motor Regular: '+regular.content.slice(0,260));
+          assert.equal(simples.data.versaoApp,'0.0.6');
+          assert.equal(regular.data.versaoApp,'1.6.1');
+          console.log('Simples conectado:',simples.data.versaoApp,'base',simples.data.versaoDb);
+          console.log('Regime Regular conectado:',regular.data.versaoApp,'base',regular.data.versaoDb);
+          const operation={
+            id:'507f1f77bcf86cd799439011',versao:'2.0.0',data:'2027-03-15',tpDoc:'55',CRT:'1',
+            itens:[{numero:1,cAtivSN:'01',cClassTrib:'000001',baseCalculo:'950.00',
+              valorImpostoSeletivo:'0.00',pIBSSN:'1.25',pCBSSN:'2.75'}]
+          };
+          const calculated=await doFetch('/api/simples?route=calculadora%2Fobservabilidade%2Fsimples-nacional',{
+            method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(operation)
+          });
+          assert.equal(calculated.status,200,'Cálculo Simples HTTP '+calculated.status+': '+calculated.content.slice(0,320));
+          const state=calculated.data?.objetos?.[0]?.estadoItem;
+          assert.equal(state,'CALCULADO','Estado fiscal inesperado: '+String(state));
+          assert.ok(calculated.data.total,'Resultado total do motor ausente');
+          console.log('Calculo real Simples:',state,'com total presente');
+          NODE
