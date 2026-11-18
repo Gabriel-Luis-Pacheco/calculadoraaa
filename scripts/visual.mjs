@@ -19,6 +19,16 @@ try{
   assert.ok(outer.mainW>200,'Main workspace too small at '+width+' '+JSON.stringify(outer));
   assert.ok(outer.bodyWidth<=width+2,'Document horizontal overflow '+width+' '+JSON.stringify(outer));
   assert.ok(outer.bodyHeight<=900+2,'Document vertical scroll '+width+' '+JSON.stringify(outer));
+  if(width<=800){
+    const visibleTabs=await page.locator('.tool-nav').evaluate(nav=>{
+      const bounds=nav.getBoundingClientRect();
+      return [...nav.querySelectorAll('.tool')].filter(el=>{
+        const rect=el.getBoundingClientRect();
+        return rect.left>=bounds.left-1 && rect.right<=bounds.right+1;
+      }).length;
+    });
+    assert.ok(visibleTabs>=2,'Mobile tool navigation must show at least two full options at '+width);
+  }
   await page.locator('[data-tool="regular"]').click();
   const frame=page.frameLocator('#frame-regular');
   await frame.locator('.screen.active').waitFor({state:'visible',timeout:15000});
