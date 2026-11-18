@@ -48,7 +48,7 @@
         <iframe title="Cálculo do Simples Nacional" id="frame-simples" data-src="/simples.html?embedded=1" loading="lazy"></iframe>
       </section>
       <section class="pane frame-pane" data-pane="xml" aria-label="XML" hidden>
-        <div class="embedded-message" id="xml-loading">Carregando a ferramenta de XML do Regime Regular…</div>
+        <iframe title="Validar e gerar XML fiscal" id="frame-xml" data-src="/oficial.html?embedded=1" loading="lazy"></iframe>
       </section>
 
       <section class="pane native-pane" data-pane="pedagio" hidden>
@@ -56,7 +56,7 @@
           <header class="native-title"><span class="eyebrow">CÁLCULO ESPECIAL · REGIME REGULAR</span><h1>Pedágio <span class="gold">.</span></h1><p>Informe a origem e os trechos. A base e os tributos por município são calculados pelo motor Java oficial.</p></header>
           <form id="pedagio-form" class="stack" novalidate>
             <div class="field-grid">
-              <label>Data de emissão <input type="datetime-local" id="ped-data" required></label>
+              <label>Data de emissão <input type="datetime-local" id="ped-data" required></label><label>Fuso da emissão <select id="ped-offset"><option value="-03:00">UTC−03 (Brasília)</option><option value="-04:00">UTC−04</option><option value="-05:00">UTC−05</option><option value="-02:00">UTC−02</option></select></label>
               <label>UF de origem <select id="ped-uf" required data-uf></select></label>
               <label>Código IBGE do município de origem <input id="ped-ibge" inputmode="numeric" maxlength="7" placeholder="7 dígitos" required></label>
               <label>Base total da operação (R$) <input id="ped-base" inputmode="decimal" placeholder="200,00" required></label>
@@ -123,7 +123,7 @@
             <div class="field-grid">
               <label class="field-wide">O que deseja consultar? <select id="lookup-route"></select></label>
               <label id="lookup-data-wrap">Data de referência <input type="date" id="lookup-data"></label>
-              <label id="lookup-code-wrap">Código / filtro (quando aplicável) <input id="lookup-code" placeholder="Código fiscal"></label>
+              <label id="lookup-code-wrap">Código / filtro (quando aplicável) <input id="lookup-code" placeholder="Código fiscal"></label><label id="lookup-extra-wrap" hidden>Segundo código <input id="lookup-extra" placeholder="Quando solicitado"></label>
               <label id="lookup-uf-wrap">UF <select id="lookup-uf" data-uf></select></label>
               <label id="lookup-mun-wrap">Código do município IBGE <input id="lookup-mun" inputmode="numeric" maxlength="7" placeholder="7 dígitos"></label>
             </div>
