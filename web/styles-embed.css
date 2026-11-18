@@ -1,0 +1,83 @@
+/* Layout de incorporação: ativo SOMENTE em ?embedded=1, dentro do painel RTC.
+   Desktop: formulário rolável à esquerda + resultados persistentes à direita.
+   O iframe mantém cada módulo carregado e preserva os valores ao trocar ferramentas. */
+html.embedded,html.embedded body{height:100dvh;min-height:0;overflow:hidden;background:#f4f7f7}
+html.embedded .skip-link,html.embedded .skip,html.embedded .svg-defs{display:none!important}
+
+/* Simulador original */
+html.embedded body:has(.top)>.top,
+html.embedded body:has(.top)>.foot,
+html.embedded body:has(.top) .intro{display:none!important}
+html.embedded body:has(.top) main.wrap{height:100dvh;max-width:none;width:100%;margin:0;padding:10px!important;display:flex;flex-direction:column;min-height:0}
+html.embedded body:has(.top) .layout{height:100%;min-height:0!important;flex:1;display:grid!important;grid-template-columns:minmax(300px,34%) minmax(0,1fr)!important;align-items:stretch!important;gap:12px!important;padding-bottom:0!important}
+html.embedded body:has(.top) .panel,
+html.embedded body:has(.top) .layout>.results{height:100%!important;min-height:0!important;max-height:none!important;position:static!important;overflow-y:auto!important;overflow-x:hidden!important;scrollbar-width:thin;border:1px solid #dce6e8!important;border-radius:11px!important;box-shadow:none!important}
+html.embedded body:has(.top) .panel{padding:15px!important}
+html.embedded body:has(.top) .layout>.results{padding:11px!important}
+html.embedded body:has(.top) .regime-caption{font-size:10px!important}
+html.embedded body:has(.top) .panel-head{margin-bottom:7px!important}
+
+/* Regime Regular */
+html.embedded .shell{display:block!important;height:100dvh;min-height:0!important;overflow:hidden}
+html.embedded .sidebar,
+html.embedded .topbar,
+html.embedded .bottom-footer{display:none!important}
+html.embedded .page-frame{height:100dvh;min-height:0!important;display:block!important;overflow:hidden}
+html.embedded .main-content{width:100%!important;max-width:none!important;height:100dvh!important;min-height:0!important;margin:0!important;padding:10px!important;display:grid!important;grid-template-columns:minmax(0,1fr) minmax(310px,40%);grid-template-rows:minmax(0,1fr);gap:11px;overflow:hidden!important;position:relative}
+html.embedded .main-content>.screen{display:none!important}
+html.embedded .main-content>.screen.active{display:block!important;grid-column:1;grid-row:1;min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;animation:none!important;padding:11px;background:white;border:1px solid #dce6e8;border-radius:11px}
+html.embedded .main-content>.results-section{grid-column:2;grid-row:1;min-height:0;max-height:none;height:100%;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;margin:0!important;box-shadow:none!important}
+html.embedded .main-content>.results-section[hidden]{display:none!important}
+html.embedded .main-content:has(>.results-section[hidden])::after{content:'Resultado do motor RTC \A \A Preencha o formulário e clique em calcular. Os valores aparecerão aqui, sem sair da tela.';grid-row:1;grid-column:2;white-space:pre-wrap;padding:31px 22px;color:#788f9c;font-size:12px;line-height:1.8;text-align:center;border:1px dashed #d3dfe2;border-radius:11px;background:#fff;align-self:stretch;display:grid;align-content:center}
+html.embedded .main-content>.engine-notice{position:absolute;top:12px;left:20px;right:20px;z-index:3;box-shadow:0 8px 22px #0002}
+html.embedded .main-content>.engine-notice[hidden]{display:none!important}
+html.embedded .page-heading{margin-bottom:14px}
+html.embedded .page-heading h1{font-size:clamp(22px,2.3vw,30px)!important;line-height:1.2}
+html.embedded .page-heading p{font-size:11px!important}
+html.embedded .process-strip{font-size:10px!important;padding:10px!important}
+html.embedded .section-layout{display:block!important}
+html.embedded .section-layout>*{min-width:0!important;max-width:none!important;width:100%!important}
+html.embedded .surface{margin-bottom:11px!important;box-shadow:none!important}
+html.embedded .section-top{padding:13px 15px!important}
+html.embedded .fields-grid{gap:10px!important}
+html.embedded .results-heading{padding:16px!important}
+html.embedded #results-body{padding:13px!important}
+html.embedded .results-actions{gap:3px}
+
+/* Simples Nacional */
+html.embedded body:has(#simples-form) .app{display:block!important;width:100%;height:100dvh;min-height:0!important}
+html.embedded body:has(#simples-form) .sidebar,
+html.embedded body:has(#simples-form) .topbar,
+html.embedded body:has(#simples-form) .footer,
+html.embedded body:has(#simples-form) .heading,
+html.embedded body:has(#simples-form) .stepper,
+html.embedded body:has(#simples-form) .footnote{display:none!important}
+html.embedded body:has(#simples-form) .frame{height:100dvh;min-height:0!important;display:block}
+html.embedded body:has(#simples-form) main{height:100dvh!important;max-width:none!important;width:100%!important;margin:0!important;padding:10px!important;display:grid!important;grid-template-columns:minmax(0,1fr) minmax(300px,40%);grid-template-rows:minmax(0,1fr);gap:11px;overflow:hidden!important;position:relative}
+html.embedded #simples-form{grid-column:1;grid-row:1;min-height:0;overflow-y:auto;scrollbar-width:thin;border:1px solid #dce6e8;border-radius:11px;background:white;padding:12px}
+html.embedded #simples-form .surface{padding:15px!important;margin-bottom:10px!important;box-shadow:none!important}
+html.embedded #simples-form .section-head{margin-bottom:12px!important}
+html.embedded #simples-form .fields{gap:10px!important}
+html.embedded #simples-form .item-card{padding:12px!important}
+html.embedded #results.results{grid-column:2;grid-row:1;max-height:100%;height:100%;overflow-y:auto;scrollbar-width:thin;margin:0!important;padding:13px!important;box-shadow:none!important}
+html.embedded #results.results[hidden]{display:none!important}
+html.embedded body:has(#simples-form) main:has(#results[hidden])::after{content:'Resultado do Simples Nacional \A \A Preencha a operação e clique em calcular. Os totais aparecerão aqui.';white-space:pre-wrap;display:grid;align-content:center;justify-content:center;text-align:center;color:#788f9c;font-size:12px;line-height:1.8;background:white;border:1px dashed #d3dfe2;border-radius:11px;grid-column:2;grid-row:1;padding:22px}
+html.embedded body:has(#simples-form) #engine-warning{grid-column:1/-1;position:absolute;top:10px;left:20px;right:20px;z-index:4;box-shadow:0 8px 20px #0002}
+html.embedded body:has(#simples-form) #engine-warning[hidden]{display:none!important}
+
+@media(max-width:1000px){
+ html.embedded .main-content{grid-template-columns:minmax(0,1fr) minmax(240px,39%)!important}
+ html.embedded body:has(#simples-form) main{grid-template-columns:minmax(0,1fr) minmax(240px,39%)!important}
+ html.embedded body:has(.top) .layout{grid-template-columns:minmax(250px,40%) minmax(0,1fr)!important}
+}
+@media(max-width:680px){
+ html.embedded .main-content{grid-template-columns:1fr!important;grid-template-rows:minmax(0,60%) minmax(0,40%)!important}
+ html.embedded .main-content>.screen.active{grid-row:1;grid-column:1}
+ html.embedded .main-content>.results-section{grid-row:2;grid-column:1}
+ html.embedded .main-content:has(>.results-section[hidden])::after{grid-row:2;grid-column:1}
+ html.embedded body:has(#simples-form) main{grid-template-columns:1fr!important;grid-template-rows:minmax(0,60%) minmax(0,40%)!important}
+ html.embedded #simples-form{grid-column:1;grid-row:1}
+ html.embedded #results.results{grid-column:1;grid-row:2}
+ html.embedded body:has(#simples-form) main:has(#results[hidden])::after{grid-column:1;grid-row:2}
+ html.embedded body:has(.top) .layout{grid-template-columns:1fr!important;grid-template-rows:minmax(0,54%) minmax(0,46%)!important}
+}
