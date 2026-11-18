@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101e2e">
+<title>Simples Nacional | Calculadora RTC</title>
+<meta name="description" content="Cálculo e conferência de IBS e CBS do Simples Nacional com o motor Java de código aberto da Receita Federal.">
+<link rel="stylesheet" href="/styles-simples.css">
+<script defer src="/src/simples.js"></script>
+</head>
+<body>
+<a href="#main" class="skip">Ir ao formulário</a>
+<div class="app">
+  <aside class="sidebar">
+    <a class="brand" href="/oficial" aria-label="RTC, voltar ao ambiente fiscal"><span class="brand-symbol">|||</span><span><strong>RTC<span class="gold">.</span></strong><small>AMBIENTE FISCAL</small></span></a>
+    <div class="nav-kicker">FERRAMENTAS</div>
+    <nav class="navigation" aria-label="Ferramentas fiscais">
+      <a href="/oficial"><span class="nav-icon">▦</span><span>Regime Regular<small>CBS, IBS, IS e XML</small></span></a>
+      <a href="/simples" aria-current="page"><span class="nav-icon">▤</span><span>Simples Nacional<small>Cálculo por atividade</small></span></a>
+      <a href="/"><span class="nav-icon">↗</span><span>Simulador de impacto<small>Comparação de cenários</small></span></a>
+    </nav>
+    <div class="sidebar-spacer"></div>
+    <div class="engine-card"><span>MOTOR INDEPENDENTE</span><strong>RTC · Simples Nacional</strong><p>Implementação baseada no projeto da Receita Federal, mantida nesta instância.</p><a href="https://github.com/ReceitaFederal/calculadora-rtc-simples-nacional" target="_blank" rel="noopener noreferrer">Ver código de origem <span aria-hidden="true">↗</span></a></div>
+  </aside>
+  <div class="frame">
+    <header class="topbar"><div class="crumb"><span class="crumb-icon"></span> Calculadora RTC <span class="slash">/</span> <strong>Simples Nacional</strong></div><button type="button" class="status" id="check-motor" title="Verificar conexão com o motor do Simples Nacional"><i id="status-dot"></i><span id="status-text">Verificando motor…</span><span aria-hidden="true">↻</span></button></header>
+    <main id="main">
+      <section class="heading">
+        <span class="eyebrow">MÓDULO 02 / REFORMA TRIBUTÁRIA</span>
+        <div class="heading-main"><div><h1>Simples Nacional<span class="point">.</span></h1><p>Calcule o IBS e a CBS conforme o enquadramento da atividade e os percentuais efetivos informados. Cada item recebe um resultado individual.</p></div><span class="engine-tag">Motor oficial em Java</span></div>
+      </section>
+      <div id="engine-warning" class="warning" role="status" hidden><span class="warning-icon" aria-hidden="true">i</span><div><strong id="warning-title">Motor indisponível</strong><p id="warning-text">O serviço pode estar iniciando. Preencha o formulário normalmente.</p></div><button type="button" id="retry" class="text-button">Tentar novamente</button></div>
+      <div class="stepper" aria-label="Etapas do cálculo"><span class="current"><b>01</b> Identificação</span><i></i><span><b>02</b> Atividades e alíquotas</span><i></i><span><b>03</b> Resultado</span></div>
+      <form id="simples-form" novalidate>
+        <section class="surface">
+          <div class="section-head"><span class="num">01</span><div><h2>Dados da operação</h2><p>Defina a data de referência, o documento e o regime do emitente.</p></div></div>
+          <div class="fields">
+            <label>Data do fato gerador <input id="data" type="date" required></label>
+            <label>Documento fiscal <select id="tp-doc" required><option value="55">NF-e — modelo 55</option><option value="65">NFC-e — modelo 65</option></select></label>
+            <label>Regime tributário (CRT)<select id="crt" required><option value="1">1 · Simples Nacional</option><option value="2">2 · Excesso de sublimite</option><option value="3">3 · Regime normal com apuração por fora</option></select></label>
+            <label id="regime-wrap" hidden>Regime IBS/CBS<select id="tp-regime"><option value="2">2 · Apuração por fora do Simples</option></select></label>
+            <label>Compra governamental (opcional)<select id="ente"><option value="">Não se aplica</option><option value="1">União</option><option value="2">Estado</option><option value="3">Distrito Federal</option><option value="4">Município</option></select></label>
+          </div>
+          <p class="hint">O regime deve corresponder aos dados reais do contribuinte. O motor aplica as regras e as vigências de sua própria base de dados.</p>
+        </section>
+        <section class="surface">
+          <div class="section-head section-space"><span class="num">02</span><div><h2>Itens e atividades</h2><p>Informe os valores e as alíquotas efetivas do Simples Nacional quando aplicáveis.</p></div><button type="button" class="secondary" id="load-activities">Consultar atividades</button></div>
+          <div id="activities-message" class="hint" aria-live="polite">Você pode pesquisar os códigos oficiais das atividades; a consulta considera a data e o modelo fiscal selecionados.</div>
+          <datalist id="atividades-list"></datalist>
+          <div id="items" class="item-list" aria-live="polite"></div>
+          <button id="add-item" class="add-item" type="button"><span aria-hidden="true">＋</span> Adicionar item</button>
+        </section>
+        <section class="surface action-surface">
+          <div><h2>Pronto para conferir?</h2><p>Os valores serão calculados pelo motor Java do Simples Nacional, não por fórmulas recriadas no navegador.</p></div>
+          <button class="primary" type="submit" id="calculate">Calcular operação <span aria-hidden="true">→</span></button>
+        </section>
+      </form>
+      <section id="results" class="results" hidden aria-live="polite" tabindex="-1">
+        <div class="result-head"><div><span class="eyebrow">RESPOSTA DO MOTOR</span><h2>Resultado do Simples Nacional</h2><p id="result-caption">Confira a situação de cada item antes de utilizar os valores.</p></div><button type="button" id="export-csv" class="secondary">Exportar CSV</button></div>
+        <div id="result-content"></div>
+      </section>
+      <p class="footnote">Ferramenta independente baseada no código MIT da Receita Federal do Brasil. Não substitui a apuração fiscal, o PGDAS-D nem a conferência da legislação e dos documentos originais.</p>
+    </main>
+    <footer class="footer"><span>Calculadora RTC · Análise fiscal</span><span>Regime Regular + Simples Nacional · Instalação independente</span></footer>
+  </div>
+</div>
+<template id="item-template">
+  <article class="item-card">
+    <div class="item-top"><div><span class="item-eyebrow">ITEM DA OPERAÇÃO</span><h3 class="item-heading">Item 01</h3></div><button type="button" class="delete-item" title="Remover item" aria-label="Remover item">Remover</button></div>
+    <div class="fields">
+      <label>Código da atividade (cAtivSN)<input name="atividade" type="text" maxlength="2" pattern="[0-9]{2}" inputmode="numeric" list="atividades-list" placeholder="Ex.: 01" autocomplete="off"><small>2 dígitos; consulte o catálogo oficial.</small></label>
+      <label>Classificação tributária (cClassTrib)<input name="classe" type="text" maxlength="6" pattern="[0-9]{6}" inputmode="numeric" placeholder="Ex.: 000001" required></label>
+      <label>Base de cálculo (R$)<input name="base" inputmode="decimal" placeholder="Ex.: 1.250,00" required></label>
+      <label>Imposto Seletivo informado (R$)<input name="is" inputmode="decimal" placeholder="0,00" value="0,00"><small>Valor calculado externamente; não é recalculado aqui.</small></label>
+      <label>Alíquota efetiva do IBS (%)<input name="ibs" inputmode="decimal" placeholder="Ex.: 1,25"><small>Informe a alíquota real, quando exigida.</small></label>
+      <label>Alíquota efetiva da CBS (%)<input name="cbs" inputmode="decimal" placeholder="Ex.: 2,75"><small>Informe a alíquota real, quando exigida.</small></label>
+    </div>
+  </article>
+</template>
+</body>
+</html>
