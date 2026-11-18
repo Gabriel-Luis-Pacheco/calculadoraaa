@@ -1,0 +1,110 @@
+name: Homologação local dos dois motores com SQLite
+
+on:
+  push:
+    paths:
+      - ".github/workflows/smoke-bancos.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+          cache-dependency-path: |
+            motores/regime-regular/pom.xml
+            motores/simples-nacional/pom.xml
+
+      - name: Criar banco SQLite pelos scripts originais
+        run: bash infra/setup-db.sh
+
+      - name: Conferir estrutura de banco
+        run: |
+          python3 - <<'PY'
+          import sqlite3,os
+          p="infra/data/calculadora-pro.db"
+          assert os.path.getsize(p)>100000
+          conn=sqlite3.connect("file:"+p+"?mode=ro",uri=True)
+          tables=[x[0] for x in conn.execute("select name from sqlite_master where type='table'")]
+          print("sqlite_bytes",os.path.getsize(p),"tables",len(tables))
+          for x in [x for x in tables if "SIMPLES" in x.upper()][:20]:
+              print("simples_table",x)
+          assert len(tables)>20
+          conn.close()
+          PY
+
+      - name: Compilar os dois motores
+        run: |
+          (cd motores/regime-regular && mvn -B -ntp -Dmaven.test.skip=true package)
+          (cd motores/simples-nacional && mvn -B -ntp -Dmaven.test.skip=true package)
+
+      - name: Iniciar e executar operações fiscais pelos serviços
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p motores/regime-regular/calculadora/db motores/simples-nacional/calculadora/db
+          cp infra/data/calculadora-pro.db motores/regime-regular/calculadora/db/calculadora-pro.db
+          cp infra/data/calculadora-pro.db motores/simples-nacional/calculadora/db/calculadora-pro.db
+          (
+            cd motores/regime-regular
+            java -Dspring.profiles.active=offline -jar target/api-regime-geral.jar > "$GITHUB_WORKSPACE/regime.log" 2>&1
+          ) &
+          RP=$!
+          (
+            cd motores/simples-nacional
+            java -Dspring.profiles.active=offline -jar target/api-simples-nacional.jar > "$GITHUB_WORKSPACE/simples.log" 2>&1
+          ) &
+          SP=$!
+          trap 'kill $RP $SP 2>/dev/null || true' EXIT
+          ok_regular=false;ok_simples=false
+          for i in $(seq 1 65); do
+            if curl -fsS --max-time 3 http://127.0.0.1:8080/api/calculadora/dados-abertos/versao -o /tmp/regime-version.json; then ok_regular=true; fi
+            if curl -fsS --max-time 3 http://127.0.0.1:8082/api/versao -o /tmp/simples-version.json; then ok_simples=true; fi
+            if [ "$ok_regular" = true ] && [ "$ok_simples" = true ]; then break; fi
+            sleep 3
+          done
+          if [ "$ok_regular" != true ] || [ "$ok_simples" != true ]; then
+            echo "Startup failed: regular=$ok_regular simple=$ok_simples"
+            tail -n 100 regime.log || true;tail -n 100 simples.log || true
+            exit 1
+          fi
+          python3 - <<'PY'
+          import json
+          for f in ("/tmp/regime-version.json","/tmp/simples-version.json"):
+              obj=json.load(open(f))
+              print(f, list(obj))
+              assert isinstance(obj,dict)
+          PY
+          cat > /tmp/op-regular.json <<'JSON'
+          {
+            "id":"6194602ea71cbf9431c236de4409d920","versao":"1.0.0",
+            "dhFatoGerador":"2027-03-10T10:00:00-03:00","municipio":4314902,"uf":"RS",
+            "itens":[{"numero":1,"ncm":"10063021","cst":"200","cClassTrib":"200003","baseCalculo":100,"quantidade":20,"unidade":"KG","aliquotasNominais":{"cbs":8.8,"ibsEstadual":0.05,"ibsMunicipal":0.05}}]
+          }
+          JSON
+          cat > /tmp/op-simples.json <<'JSON'
+          {
+            "id":"507f1f77bcf86cd799439011","versao":"2.0.0","data":"2027-03-15",
+            "tpDoc":"55","CRT":"1",
+            "itens":[{"numero":1,"cAtivSN":"01","cClassTrib":"000001","baseCalculo":"950.00","valorImpostoSeletivo":"0.00","pIBSSN":"1.25","pCBSSN":"2.75"}]
+          }
+          JSON
+          curl -fsS --max-time 30 -X POST http://127.0.0.1:8080/api/calculadora/observabilidade/regime-geral -H 'Content-Type: application/json' -d @/tmp/op-regular.json -o /tmp/resp-regular.json
+          curl -fsS --max-time 30 -X POST http://127.0.0.1:8082/api/calculadora/observabilidade/simples-nacional -H 'Content-Type: application/json' -d @/tmp/op-simples.json -o /tmp/resp-simples.json
+          python3 - <<'PY'
+          import json
+          for f in ("/tmp/resp-regular.json","/tmp/resp-simples.json"):
+              obj=json.load(open(f))
+              print(f, "item_states", [item.get("estadoItem") for item in obj.get("objetos",[])])
+              assert "objetos" in obj and len(obj["objetos"])>=1
+              assert "total" in obj
+          PY
