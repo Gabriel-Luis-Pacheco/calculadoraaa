@@ -20,10 +20,10 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public final class EngineKeyFilter extends OncePerRequestFilter {
-    @Value("\${RTC_ENGINE_SHARED_KEY:}")
+    @Value("${RTC_ENGINE_SHARED_KEY:}")
     private String secret;
 
-    @Value("\${RTC_ENGINE_PROTECTED:false}")
+    @Value("${RTC_ENGINE_PROTECTED:false}")
     private boolean protectedMode;
 
     @Override
