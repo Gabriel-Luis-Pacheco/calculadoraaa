@@ -1,0 +1,53 @@
+name: Validar a Calculadora RTC integrada
+
+on:
+  push:
+    paths:
+      - "web/**"
+      - "tests/**"
+      - "motores/**"
+      - "infra/**"
+      - "package.json"
+      - ".github/workflows/testar.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  web-e-proxies:
+    name: Interface, DTOs, ISS e segurança das rotas
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm install --no-audit --no-fund
+      - run: npm run check
+      - run: npm test
+
+  compilar-java:
+    name: Compilar ${{ matrix.engine }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        engine: [regime-regular, simples-nacional]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+          cache-dependency-path: motores/${{ matrix.engine }}/pom.xml
+      - name: Compilar motor oficial sem depender do banco SQLite em runtime
+        working-directory: motores/${{ matrix.engine }}
+        run: mvn -B -ntp -Dmaven.test.skip=true package
+      - name: Conferir artefato gerado
+        run: |
+          test -s motores/${{ matrix.engine }}/target/api-*.jar
+          echo "Java package generated for ${{ matrix.engine }}"
