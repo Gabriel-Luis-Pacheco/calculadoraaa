@@ -1,0 +1,30 @@
+name: rtc-completo
+services:
+  regime-regular:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.java
+      args:
+        ENGINE: regime-regular
+        ARTIFACT: api-regime-geral
+    environment:
+      SPRING_PROFILES_ACTIVE: offline
+    ports:
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - ./data/calculadora-pro.db:/app/calculadora/db/calculadora-pro.db:ro
+    restart: unless-stopped
+  simples-nacional:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.java
+      args:
+        ENGINE: simples-nacional
+        ARTIFACT: api-simples-nacional
+    environment:
+      SPRING_PROFILES_ACTIVE: offline
+    ports:
+      - "127.0.0.1:8082:8082"
+    volumes:
+      - ./data/calculadora-pro.db:/app/calculadora/db/calculadora-pro.db:ro
+    restart: unless-stopped
