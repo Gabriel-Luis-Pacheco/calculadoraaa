@@ -50,7 +50,7 @@ Variáveis de ambiente do projeto Vercel (exemplo em `web/.env.example`):
 - `RTC_SIMPLES_ENGINE_URL`: URL HTTPS do serviço Simples Nacional **terminando em `/api`**.
 - `RTC_SIMPLES_ENGINE_SHARED_KEY`: opcional, apenas se o serviço Simples tiver middleware de autenticação por chave.
 
-**Importar código para o GitHub não implanta automaticamente o Java.** Até ser implantado um segundo serviço Java e configurado `RTC_SIMPLES_ENGINE_URL`, a nova tela indica motor não configurado. Não informe ao público que o Simples está online antes dessa etapa.
+**Estado atual da instalação:** o serviço Java do Simples Nacional foi implantado no Render Free (workspace `javaaaa`) e está ligado ao proxy da Vercel por variáveis server-side. O usuário final não insere chave nem configura motor. Para replicar o projeto em outro ambiente, ainda é necessário hospedar Java e configurar as variáveis correspondentes.
 
 Os proxies são públicos e têm controles básicos em memória. Antes de tráfego público relevante, implantar rate limiting distribuído, proteção contra abuso, métricas e custos monitorados.
 

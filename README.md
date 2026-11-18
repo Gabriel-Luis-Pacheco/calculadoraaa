@@ -16,7 +16,7 @@ O projeto reúne o código integral da Receita Federal para **Regime Regular** e
 
 ### Interface
 
-- **Painel fiscal integrado:** `/` (oito ferramentas na mesma página)
+- **Painel fiscal integrado:** `/` (cinco ferramentas originais primeiro e cinco ferramentas adicionais depois)
 - **Regime Regular:** `/oficial` (abre o módulo dentro do painel)
 - **Simples Nacional:** `/simples` (abre o módulo dentro do painel)
 - **Simulador de impacto original:** `/simulador`
@@ -33,7 +33,7 @@ bash infra/setup-db.sh
 docker compose -f infra/compose.yaml up --build
 ```
 
-Leia o [guia de integração e homologação](docs/INTEGRACAO.md) antes de iniciar: ambos precisam de uma base SQLite válida; os serviços devem ser testados **separadamente**. A versão inicial do Simples Nacional precisa de implantação própria no Render (ou serviço equivalente) antes de funcionar online. O contêiner protegido e o Blueprint gratuito estão em `infra/Dockerfile.simples.render` e `render.yaml`; consulte [o guia](docs/PUBLICAR_SIMPLES_RENDER.md).
+Leia o [guia de integração e homologação](docs/INTEGRACAO.md) antes de iniciar: ambos precisam de uma base SQLite válida; os serviços devem ser testados **separadamente**. A instância pública já utiliza o Java do Simples Nacional no Render Free (com autenticação interna Vercel → Render). Os analistas não configuram chave nem instalam Java. O Blueprint `render.yaml` é apenas uma referência de infraestrutura: **não o importe novamente** em um segundo serviço. Consulte [operações e manutenção](docs/PUBLICAR_SIMPLES_RENDER.md).
 
 ## Código original e licenças
 

@@ -64,4 +64,10 @@ jobs:
           assert.equal(state,'CALCULADO','Estado fiscal inesperado: '+String(state));
           assert.ok(calculated.data.total,'Resultado total do motor ausente');
           console.log('Calculo real Simples:',state,'com total presente');
+          const direct=await fetch('https://rtc-simples-nacional-java.onrender.com/api/versao',{
+            signal:AbortSignal.timeout(30000)
+          });
+          assert.equal(direct.status,401,'The direct Java engine must require an internal key.');
+          assert.ok(!root.content.includes('RTC_SIMPLES_ENGINE_SHARED_KEY'),'Internal key reference leaked to public markup');
+          console.log('Segurança do motor Render: sem chave HTTP 401; Vercel autenticada HTTP 200');
           NODE

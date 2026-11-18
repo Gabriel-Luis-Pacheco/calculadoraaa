@@ -31,6 +31,18 @@ try{
   assert.ok(layout.formY<120 && layout.formW>150,'Regular form clipped/under sidebar at '+width+': '+JSON.stringify(layout));
   assert.ok(layout.docWidth<=layout.winWidth+2,'Embedded regular horizontal overflow '+width+': '+JSON.stringify(layout));
   assert.ok(layout.docHeight<=layout.winHeight+2,'Embedded regular page scroll '+width+': '+JSON.stringify(layout));
+  if(width===1366){
+    for(const [tool,id,screen] of [
+      ['bases-legado','frame-bases-legado','bases'],
+      ['consultas-legado','frame-consultas-legado','consultas'],
+      ['xml','frame-xml','xml']
+    ]){
+      await page.locator('[data-tool="'+tool+'"]').click();
+      const legacy=page.frameLocator('#'+id).locator('.screen.active[data-screen="'+screen+'"]');
+      await legacy.waitFor({state:'visible',timeout:15000});
+      assert.ok(await legacy.isVisible(),'Original '+screen+' did not open inside the panel');
+    }
+  }
   await page.locator('[data-tool="simples"]').click();
   const sm=page.frameLocator('#frame-simples');
   await sm.locator('#simples-form').waitFor({state:'visible',timeout:15000});
