@@ -6,13 +6,15 @@ const escape = v => String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;'
 const UF_CODES={AC:12,AL:27,AM:13,AP:16,BA:29,CE:23,DF:53,ES:32,GO:52,MA:21,MG:31,MS:50,MT:51,PA:15,PB:25,PE:26,PI:22,PR:41,RJ:33,RN:24,RO:11,RR:14,RS:43,SC:42,SE:28,SP:35,TO:17};
 const tools={
  impacto:{name:'Simulador de impacto',subtitle:'Premissas e comparativos em uma única tela.'},
- regular:{name:'Regime Regular',subtitle:'Cálculos de CBS, IBS e IS pelo motor Java.'},
+ regular:{name:'Calcular operação',subtitle:'Cálculos de CBS, IBS e IS pelo motor Java.'},
+ 'bases-legado':{name:'Base de cálculo',subtitle:'Base unificada para NF-e, NFC-e e NFS-e.'},
+ 'consultas-legado':{name:'Consulta tributária',subtitle:'Consulte CST, cClassTrib e tabelas oficiais.'},
+ xml:{name:'Conferir XML',subtitle:'Geração e validação de XML fiscal.'},
  simples:{name:'Simples Nacional',subtitle:'Cálculo e classificação tributária por atividade.'},
  pedagio:{name:'Pedágio',subtitle:'Rateio por trecho com regras do Regime Regular.'},
- nfse:{name:'NFS-e',subtitle:'Bases, indicadores e locais de incidência.'},
+ nfse:{name:'NFS-e especializada',subtitle:'Bases, indicadores e locais de incidência.'},
  bases:{name:'Bases especiais',subtitle:'Cálculos auxiliares de mercadorias e Imposto Seletivo.'},
- consultas:{name:'Consultas fiscais',subtitle:'Pesquisa de tabelas, classificações e vigências.'},
- xml:{name:'XML fiscal',subtitle:'Gerar e conferir arquivos XML.'}
+ consultas:{name:'Consultas avançadas',subtitle:'Pesquisa de tabelas, classificações e vigências.'}
 };
 const states={current:'impacto',framesLoaded:new Set(['impacto']),nfse:'indicador',pending:new Set()};
 const today=()=>{
@@ -36,13 +38,10 @@ function navigate(name,{history=true}={}){
  $('footer-current').textContent=tools[name].name;
  $('system-badge').textContent='Código Receita Federal · MIT';
  setStatus(name==='simples'?'Simples Nacional usa um motor Java próprio.':'Painel compacto com resultado sempre à vista.',tools[name].subtitle);
- if(['impacto','regular','simples','xml'].includes(name)){
+ if(['impacto','regular','bases-legado','consultas-legado','xml','simples'].includes(name)){
   const frame=$('frame-'+name);
   if(frame&&!states.framesLoaded.has(name)){
    states.framesLoaded.add(name);
-   frame.addEventListener('load',()=>{
-    if(name==='xml')setTimeout(()=>{try{frame.contentDocument?.querySelector('[data-page="xml"]')?.click()}catch{}},80);
-   },{once:true});
    frame.src=frame.dataset.src;
   }
  }

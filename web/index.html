@@ -16,14 +16,18 @@
     <a href="/painel" class="identity" aria-label="RTC - ambiente fiscal"><span class="brand-emblem">▥</span><span class="brand-text"><strong>RTC<span>.</span></strong><small>AMBIENTE FISCAL</small></span></a>
     <div class="rail-title">SELECIONE A FERRAMENTA</div>
     <nav class="tool-nav" aria-label="Módulos">
-      <button type="button" class="tool active" data-tool="impacto" aria-current="page"><span class="glyph">◫</span><span>Simulador<small>Custo e comparativos</small></span></button>
-      <button type="button" class="tool" data-tool="regular"><span class="glyph">▦</span><span>Regime Regular<small>CBS, IBS e IS</small></span></button>
+      <div class="nav-group-label">FERRAMENTAS ORIGINAIS</div>
+      <button type="button" class="tool active" data-tool="impacto" aria-current="page"><span class="glyph">◫</span><span>Simulador de impacto<small>Custo e comparativos</small></span></button>
+      <button type="button" class="tool" data-tool="regular"><span class="glyph">▦</span><span>Calcular operação<small>CBS, IBS e IS</small></span></button>
+      <button type="button" class="tool" data-tool="bases-legado"><span class="glyph">▤</span><span>Base de cálculo<small>NF-e, NFC-e e NFS-e</small></span></button>
+      <button type="button" class="tool" data-tool="consultas-legado"><span class="glyph">⌕</span><span>Consulta tributária<small>CST, cClassTrib e tabelas</small></span></button>
+      <button type="button" class="tool" data-tool="xml"><span class="glyph">⌁</span><span>Conferir XML<small>Gerar e validar</small></span></button>
+      <div class="nav-group-label nav-group-new">NOVAS FERRAMENTAS</div>
       <button type="button" class="tool" data-tool="simples"><span class="glyph">◈</span><span>Simples Nacional<small>Atividades e tributos</small></span></button>
       <button type="button" class="tool" data-tool="pedagio"><span class="glyph">≋</span><span>Pedágio<small>Trechos e rateio</small></span></button>
-      <button type="button" class="tool" data-tool="nfse"><span class="glyph">▤</span><span>NFS-e<small>Indicadores e bases</small></span></button>
+      <button type="button" class="tool" data-tool="nfse"><span class="glyph">▤</span><span>NFS-e · Especializada<small>Indicadores e bases</small></span></button>
       <button type="button" class="tool" data-tool="bases"><span class="glyph">∑</span><span>Bases especiais<small>Mercadorias e IS</small></span></button>
-      <button type="button" class="tool" data-tool="consultas"><span class="glyph">⌕</span><span>Consultas fiscais<small>Tabelas e classificações</small></span></button>
-      <button type="button" class="tool" data-tool="xml"><span class="glyph">⌁</span><span>XML fiscal<small>Validar e gerar</small></span></button>
+      <button type="button" class="tool" data-tool="consultas"><span class="glyph">⌕</span><span>Consultas avançadas<small>Tabelas e classificações</small></span></button>
     </nav>
     <div class="rail-bottom">
       <div class="provenance"><span class="dot-source"></span><div><strong>Motores da Receita Federal</strong><small>Código MIT · instalação independente</small></div></div>
@@ -44,11 +48,17 @@
       <section class="pane frame-pane" data-pane="regular" aria-label="Regime Regular" hidden>
         <iframe title="Cálculos do Regime Regular" id="frame-regular" data-src="/oficial.html?embedded=1" loading="lazy"></iframe>
       </section>
-      <section class="pane frame-pane" data-pane="simples" aria-label="Simples Nacional" hidden>
-        <iframe title="Cálculo do Simples Nacional" id="frame-simples" data-src="/simples.html?embedded=1" loading="lazy"></iframe>
+      <section class="pane frame-pane" data-pane="bases-legado" aria-label="Base de cálculo original" hidden>
+        <iframe title="Base de cálculo NF-e, NFC-e e NFS-e" id="frame-bases-legado" data-src="/oficial.html?embedded=1&view=bases" loading="lazy"></iframe>
+      </section>
+      <section class="pane frame-pane" data-pane="consultas-legado" aria-label="Consulta tributária original" hidden>
+        <iframe title="Consultas tributárias de CST e cClassTrib" id="frame-consultas-legado" data-src="/oficial.html?embedded=1&view=consultas" loading="lazy"></iframe>
       </section>
       <section class="pane frame-pane" data-pane="xml" aria-label="XML" hidden>
-        <iframe title="Validar e gerar XML fiscal" id="frame-xml" data-src="/oficial.html?embedded=1" loading="lazy"></iframe>
+        <iframe title="Validar e gerar XML fiscal" id="frame-xml" data-src="/oficial.html?embedded=1&view=xml" loading="lazy"></iframe>
+      </section>
+      <section class="pane frame-pane" data-pane="simples" aria-label="Simples Nacional" hidden>
+        <iframe title="Cálculo do Simples Nacional" id="frame-simples" data-src="/simples.html?embedded=1" loading="lazy"></iframe>
       </section>
 
       <section class="pane native-pane" data-pane="pedagio" hidden>

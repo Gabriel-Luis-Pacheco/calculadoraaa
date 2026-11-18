@@ -600,6 +600,8 @@ function localFiscalDate(){
 const today=localFiscalDate();
 if(/^\d{4}-\d{2}-\d{2}$/.test(today)){$('op-date').value=today;$('lookup-date').value=today;$('base-year').value=today.slice(0,4);$('nfse-year').value=today.slice(0,4)}
 setBaseMode();setNfseOptions();renderItems();
+const requestedView=new URLSearchParams(location.search).get('view');
+if(['operacao','bases','consultas','xml','referencias'].includes(requestedView))switchPage(requestedView);
 statusConnection(false,'Verificando motor…');
 checkEngine();
 })();

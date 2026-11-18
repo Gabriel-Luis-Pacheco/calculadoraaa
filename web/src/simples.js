@@ -1,7 +1,7 @@
 (() => {
 'use strict';
 const $ = id => document.getElementById(id);
-const state = { count:0, activities:[], csv:[], busy:false, checking:false };
+const state = { count:0, activities:[], csv:[], busy:false, checking:false, healthTries:0, healthTimer:null };
 const escapeHTML = value => String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 const real = value => Number(value).toLocaleString('pt-BR',{style:'currency',currency:'BRL',minimumFractionDigits:2,maximumFractionDigits:2});
 const money = value => value===undefined||value===null||value===''?'—':real(value);
@@ -51,6 +51,8 @@ function status(kind,title,description){
  $('status-text').textContent=kind==='ready'?'Motor conectado':kind==='setup'?'Motor não configurado':'Motor indisponível';
  $('check-motor').className='status '+(kind==='ready'?'ready':kind==='setup'?'error':'');
  $('engine-warning').hidden=kind==='ready';
+ $('engine-warning').dataset.state=kind;
+ if(kind==='ready'){state.healthTries=0;clearTimeout(state.healthTimer);state.healthTimer=null;}
  $('warning-title').textContent=title||label;
  $('warning-text').textContent=description||'Você pode preencher os campos enquanto a conexão é restabelecida.';
 }
@@ -79,16 +81,32 @@ async function request(route,{method='GET',params={},body=null}={}){
  status('ready');
  return data;
 }
+function scheduleHealthRetry(){
+ if(state.healthTimer || $('engine-warning').dataset.state==='ready')return;
+ const delay=Math.min(45000,15000+state.healthTries*5000);
+ state.healthTries++;
+ state.healthTimer=setTimeout(()=>{state.healthTimer=null;checkHealth()},delay);
+}
 async function checkHealth(){
  if(state.checking)return;
  state.checking=true;
+ clearTimeout(state.healthTimer);state.healthTimer=null;
  $('status-text').textContent='Verificando motor…';
  try{await request('versao');}
- catch(e){if(!['setup','sleep'].includes($('engine-warning').dataset.state||'')){status('sleep','Motor aguardando conexão',e.message)}}
- finally{state.checking=false}
+ catch(e){
+  if(!['setup','sleep'].includes($('engine-warning').dataset.state||'')){
+   status('sleep','Motor aguardando conexão',e.message);
+  }
+ }finally{
+  state.checking=false;
+  if($('engine-warning').dataset.state!=='ready')scheduleHealthRetry();
+ }
 }
-$('check-motor').addEventListener('click',checkHealth);
-$('retry').addEventListener('click',checkHealth);
+$('check-motor').addEventListener('click',()=>{state.healthTries=0;checkHealth()});
+$('retry').addEventListener('click',()=>{state.healthTries=0;checkHealth()});
+document.addEventListener('visibilitychange',()=>{
+ if(!document.hidden&&$('engine-warning').dataset.state!=='ready')checkHealth();
+});
 checkHealth();
 
 function numeric(input,{label,decimals=2,required=false,maximum=null}={}){

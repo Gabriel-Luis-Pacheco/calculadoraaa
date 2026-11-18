@@ -16,18 +16,21 @@ function setup(){
 }
 test('Painel em um viewport: oito ferramentas, sem recriação dos formulários ou necessidade de outra aba',()=>{
  const {dom,w,$}=setup();
- assert.equal(w.document.querySelectorAll('[data-tool]').length,8);
+ assert.equal(w.document.querySelectorAll('[data-tool]').length,10);
  assert.equal(w.document.querySelector('.app-shell').classList.contains('compact'),true);
  assert.match(css,/height:100dvh/);
  assert.match(embed,/html\.embedded .main-content/);
- for(const name of ['impacto','regular','simples','pedagio','nfse','bases','consultas','xml']){
+ for(const name of ['impacto','regular','bases-legado','consultas-legado','xml','simples','pedagio','nfse','bases','consultas']){
   w.document.querySelector('[data-tool="'+name+'"]').click();
   assert.equal(w.document.querySelectorAll('[data-pane]:not([hidden])').length,1);
   assert.equal(w.document.querySelector('[data-pane="'+name+'"]').hidden,false);
  }
  assert.equal($('frame-regular').getAttribute('src'),'/oficial.html?embedded=1');
  assert.equal($('frame-simples').getAttribute('src'),'/simples.html?embedded=1');
- assert.equal($('frame-xml').getAttribute('src'),'/oficial.html?embedded=1');
+ assert.equal($('frame-xml').getAttribute('src'),'/oficial.html?embedded=1&view=xml');
+ assert.equal($('frame-bases-legado').getAttribute('src'),'/oficial.html?embedded=1&view=bases');
+ assert.equal($('frame-consultas-legado').getAttribute('src'),'/oficial.html?embedded=1&view=consultas');
+ assert.deepEqual([...w.document.querySelectorAll('[data-tool]')].map(x=>x.dataset.tool),['impacto','regular','bases-legado','consultas-legado','xml','simples','pedagio','nfse','bases','consultas']);
  const frame=$('frame-regular');
  w.document.querySelector('[data-tool="simples"]').click();
  w.document.querySelector('[data-tool="regular"]').click();
