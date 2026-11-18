@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "test": "node --test tests/*.test.mjs",
-    "check": "node --check web/src/simples.js && node --check web/src/oficial.js && node --check web/src/calc.js && node --check web/api/simples.js && node --check web/api/rtc.js && node --check web/api/iss.js"
+    "check": "node --check web/src/simples.js && node --check web/src/oficial.js && node --check web/src/calc.js && node --check web/api/simples.js && node --check web/api/rtc.js && node --check web/api/iss.js && node --check web/src/painel.js"
   },
   "devDependencies": {
     "jsdom": "^27.2.0"
