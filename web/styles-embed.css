@@ -90,3 +90,6 @@ html.embedded body:has(#simples-form) #engine-warning[hidden]{display:none!impor
 
 /* Hard viewport containment: prevent body margin collapse and 8px spill on Chromium. */
 html.embedded body:has(#simples-form){position:fixed!important;inset:0!important;width:100%!important;height:100dvh!important;overflow:hidden!important}
+
+/* Embedded tool pages cannot inherit the browser's default 8px body margin. */
+html.embedded body{margin:0!important;padding:0!important;width:100%!important}
