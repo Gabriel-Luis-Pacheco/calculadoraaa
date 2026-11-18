@@ -16,9 +16,11 @@ O projeto reúne o código integral da Receita Federal para **Regime Regular** e
 
 ### Interface
 
-- **Regime Regular:** `/oficial`
-- **Simples Nacional:** `/simples`
-- **Simulador de impacto existente:** `/`
+- **Painel fiscal integrado:** `/` (oito ferramentas na mesma página)
+- **Regime Regular:** `/oficial` (abre o módulo dentro do painel)
+- **Simples Nacional:** `/simples` (abre o módulo dentro do painel)
+- **Simulador de impacto original:** `/simulador`
+- **XML, NFS-e, pedágio, bases e consultas:** selecione a ferramenta no painel, sem mudar de página.
 
 Para a Vercel, configure **Root Directory = web**.
 
@@ -31,7 +33,7 @@ bash infra/setup-db.sh
 docker compose -f infra/compose.yaml up --build
 ```
 
-Leia o [guia de integração e homologação](docs/INTEGRACAO.md) antes de iniciar: ambos precisam de uma base SQLite válida; os serviços devem ser testados **separadamente**. A versão inicial do Simples Nacional precisa de implantação própria no Render (ou serviço equivalente) antes de funcionar online.
+Leia o [guia de integração e homologação](docs/INTEGRACAO.md) antes de iniciar: ambos precisam de uma base SQLite válida; os serviços devem ser testados **separadamente**. A versão inicial do Simples Nacional precisa de implantação própria no Render (ou serviço equivalente) antes de funcionar online. O contêiner protegido e o Blueprint gratuito estão em `infra/Dockerfile.simples.render` e `render.yaml`; consulte [o guia](docs/PUBLICAR_SIMPLES_RENDER.md).
 
 ## Código original e licenças
 
