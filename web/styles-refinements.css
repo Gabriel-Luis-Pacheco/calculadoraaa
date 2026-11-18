@@ -1,0 +1,176 @@
+/* RTC — Polimento visual aditivo, 18/11/2026.
+   Preserva marca, estrutura, formulários, regras fiscais e viewport compacto.
+   Inspirado na Design OS Prime v14: craft, leitura, densidade e estados. */
+:root{
+ --rtc-ink:#183847;
+ --rtc-muted:#526e7b;
+ --rtc-line:#dbe6e9;
+ --rtc-outline:#a97837;
+ --rtc-elevation:0 1px 2px rgba(16,44,58,.04),0 9px 22px rgba(16,44,58,.035);
+}
+html{text-rendering:optimizeLegibility}
+button,input,select,textarea{-webkit-tap-highlight-color:transparent}
+button,a,input,select,textarea{touch-action:manipulation}
+:where(button,a,input,select,textarea,summary):focus-visible{outline:3px solid var(--rtc-outline);outline-offset:3px}
+:where(input,select,textarea)::placeholder{color:#758d99;opacity:1}
+:where(.result-table-wrap,.result-table-wrapper,.scroll,.tool-nav){scrollbar-width:thin}
+:where(.result-table-wrap,.result-table-wrapper,.scroll){overscroll-behavior-x:contain}
+
+/* Painel integrado: reforça o sistema existente sem trocar módulos ou navegação. */
+.app-shell .rail{background:#122a3a;border-right:1px solid #2b4a5b}
+.app-shell .identity{padding-bottom:27px}
+.app-shell .brand-emblem{background:#1d394b;border-color:#827453;color:#f3c578}
+.app-shell .brand-text small{color:#b3c8d4}
+.app-shell .rail-title,.app-shell .nav-group-label{color:#b9ced8;font-size:10px;letter-spacing:.11em}
+.app-shell .nav-group-new{margin-top:10px;padding-top:15px;border-top-color:#365769;color:#e6c38b}
+.app-shell .tool-nav{gap:4px}
+.app-shell .tool{font-size:12px;font-weight:700;letter-spacing:-.005em;color:#dce7ed;min-height:49px;border-radius:9px;transition:background-color .16s,color .16s}
+.app-shell .tool:hover{background:#244254;color:white}
+.app-shell .tool.active{background:#2b4a5a;border-left-color:#f0bd6b;color:#fff}
+.app-shell .tool .glyph{width:29px;height:29px;background:#1d394b;border-color:#4c6b7c;color:#c6d8e0}
+.app-shell .tool .glyph svg{display:block;width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.app-shell .tool.active .glyph{background:#3a5354;color:#ffd28a;border-color:#c1a36e}
+.app-shell .tool small{color:#b8cbd5;font-size:10.5px;line-height:1.3}
+.app-shell .tool.active small{color:#e1ebef}
+.app-shell .provenance{border-color:#395667}
+.app-shell .provenance small{color:#b8cbd5}
+.app-shell .source-link{color:#f1c989}
+.app-shell .topbar{border-bottom-color:var(--rtc-line)}
+.app-shell .topbar-heading strong{font-size:16px;letter-spacing:-.025em;color:#1c3b4a}
+.app-shell .breadcrumbs,.app-shell .top-note{color:#607e8c}
+.app-shell .light-button{background:#fff;border-color:#cbdce1;color:#325564;font-size:11px;transition:background-color .16s,border-color .16s}
+.app-shell .light-button:hover{background:#edf5f5;border-color:#9bbdc2}
+.app-shell .light-button[aria-pressed=true]{background:#e9f4ef;color:#1f6054;border-color:#abd0c2}
+.app-shell .status-bar{background:#f5f9f8}
+.app-shell .status-copy strong{color:#294e59;font-size:11.5px}
+.app-shell .status-copy span{color:#597784;font-size:11px}
+.app-shell .system-badge{color:#286c5c}
+.app-shell .frame-pane{background:#f5f8f8}
+.app-shell .form-side,.app-shell .result-side{border-color:var(--rtc-line);box-shadow:var(--rtc-elevation)}
+.app-shell .native-title h1{letter-spacing:-.045em}
+.app-shell .native-title p{font-size:12px;line-height:1.55;color:#597480}
+.app-shell .eyebrow{letter-spacing:.11em;color:#866439}
+.app-shell .field-grid label{color:#345363;font-size:11.5px;line-height:1.35}
+.app-shell .field-grid input,.app-shell .field-grid select{background:#fff;border-color:#cbdbe1;font-size:13px;font-weight:550;min-height:42px;transition:border-color .16s,box-shadow .16s}
+.app-shell .field-grid input:hover,.app-shell .field-grid select:hover{border-color:#9bb4bd}
+.app-shell .field-grid input:focus,.app-shell .field-grid select:focus{border-color:#38837c;box-shadow:0 0 0 3px rgba(53,131,120,.14)}
+.app-shell .micro{font-size:11px;color:#56717e}
+.app-shell .list-header h2{font-size:13.5px;color:#244656}
+.app-shell .secondary,.app-shell .subtab{font-size:11.5px}
+.app-shell .subtab.active{background:#194c57;border-color:#194c57}
+.app-shell .primary{font-size:12px;min-height:43px;background:#164852;box-shadow:0 3px 10px rgba(22,72,82,.12);transition:background-color .16s}
+.app-shell .primary:hover{background:#20616c}
+.app-shell .result-label{letter-spacing:.11em;color:#87653b}
+.app-shell .empty-state{border-color:#c5d8dc}
+.app-shell .empty-state strong{font-size:15px;color:#315462}
+.app-shell .empty-state p{font-size:12px;color:#58737f}
+.app-shell .result-card h3{color:#254657;font-size:12.5px}
+.app-shell .result-card p,.app-shell .result-list li{font-size:12px;color:#496777}
+.app-shell .result-metric{background:#f6f9f9;border-color:#dce8e9}
+.app-shell .result-metric.feature{background:#e8f5ef;border-color:#bddccc}
+.app-shell .result-metric span{font-size:11px;color:#567482}
+.app-shell .result-metric strong{color:#1b3c4a;font-size:16px;letter-spacing:-.025em;font-variant-numeric:tabular-nums}
+.app-shell .result-table{font-size:12px}
+.app-shell .result-table th{color:#436272}
+.app-shell .result-table th,.app-shell .result-table td{padding:11px 12px}
+.app-shell .result-table tbody tr:hover{background:#f4f9f7}
+.app-shell .footer-line{color:#5b7784}
+
+/* Regime Regular: harmonia sem trocar o layout de cálculo ou os dados. */
+.shell .sidebar{background:#112738}
+.shell .sidebar-engine{border-color:#3a5869}
+.shell .nav-button small{color:#afc4d0}
+.shell .nav-button.active{background:#29495b;box-shadow:inset 3px 0 #e8b86a}
+.shell .nav-button.active small{color:#d7e5e9}
+.shell .page-heading h1{letter-spacing:-.04em;text-wrap:pretty}
+.shell .page-heading p{color:#526f7d}
+.shell .surface,.shell .results-section,.shell .checklist-box,.shell .reference-stack article{border-color:var(--rtc-line);box-shadow:var(--rtc-elevation)}
+.shell .surface:focus-within{border-color:#b8d3cf}
+.shell .field{color:#345362}
+.shell .field input,.shell .field select,.shell .field textarea{background-color:#fff;border-color:#cbdce1;font-size:13px;font-weight:550}
+.shell .field input:hover,.shell .field select:hover{border-color:#94b1bb}
+.shell .field small{color:#5e7887}
+.shell .num,.shell .item-number{background:#eaf3ef;color:#256259}
+.shell .outline-button,.shell .primary-button,.shell .quiet-button,.shell .kind-button{font-size:12px}
+.shell .primary-button{background:#164a50;border-color:#164a50}
+.shell .primary-button:hover{background:#215e61;border-color:#215e61}
+.shell .run-panel{background:#edf6f2;border-color:#c9e0d9}
+.shell .metric{background:#fcfdfd;border-color:#dce8e9}
+.shell .metric.featured{background:#e8f4ef;border-color:#bcdccb}
+.shell .metric strong{white-space:normal;overflow-wrap:anywhere;color:#1e3d4c;font-variant-numeric:tabular-nums}
+.shell .result-table th{color:#496878}
+.shell .result-table tbody tr:hover{background:#f5faf8}
+.shell .drop-zone{border-color:#98beb9}
+.shell .choice:has(input:checked){border-color:#318576}
+
+/* Simples Nacional: sistema tipográfico e de formulário consistente. */
+.app .sidebar{background:#12283a}
+.app .nav-kicker{color:#b2c7d4}
+.app .navigation a[aria-current=page]{background:#29495b}
+.app .heading h1{text-wrap:pretty}
+.app .heading p{color:#526e7c}
+.app .surface,.app .results{border-color:var(--rtc-line);box-shadow:var(--rtc-elevation)}
+.app .fields label{font-size:12px;color:#385867}
+.app .fields input,.app .fields select{background:#fff;border-color:#cbdce2;font-size:13px;font-weight:550;transition:border-color .16s,box-shadow .16s}
+.app .fields input:hover,.app .fields select:hover{border-color:#97b4bd}
+.app .section-head p{color:#597583}
+.app .item-card{background:#fcfdfd;border-color:#dce8ea}
+.app .primary{background:#164653;font-size:12px;transition:background-color .16s}
+.app .primary:hover{background:#21606d}
+.app .metrics .metric{border-color:#d9e6e7}
+.app .metrics .metric.feature{background:#e8f5ee}
+.app .metric strong{color:#1e3e4c;font-variant-numeric:tabular-nums}
+.app .result-table tbody tr:hover{background:#f4f9f7}
+.app .status{border-color:#cbdde2}
+
+/* Simulador legado: somente acabamento; comparações e medidas intocadas. */
+body:has(>.top){color:#1a3544}
+body:has(>.top) .top{background:#112839}
+body:has(>.top) .top .tab:hover{background:#26495a}
+body:has(>.top) .intro h2{letter-spacing:-.035em;text-wrap:pretty}
+body:has(>.top) .intro p{color:#526f7d}
+body:has(>.top) .panel,body:has(>.top) .kpi,body:has(>.top) .card{border-color:var(--rtc-line);box-shadow:var(--rtc-elevation)}
+body:has(>.top) .field label{color:#315263}
+body:has(>.top) .inp input{background:#fff;border-color:#cbdbe1;color:#1a3949;transition:border-color .16s}
+body:has(>.top) .inp input:hover{border-color:#92b1ba}
+body:has(>.top) .inp input:focus-visible{outline:2px solid var(--rtc-outline);outline-offset:1px}
+body:has(>.top) .kpi-label{color:#3e5f6e}
+body:has(>.top) .kpi-sub{color:#526f7c}
+body:has(>.top) .kpi-val{color:#193d4d;font-variant-numeric:tabular-nums}
+body:has(>.top) .bar{color:#526e7d}
+body:has(>.top) th{background:#f5f9f9;color:#466572}
+body:has(>.top) tbody tr:hover{background:#f5faf8}
+body:has(>.top) .ghost:hover{background:#edf5f5;border-color:#a9c4cc}
+
+/* Iframes no painel: respeitar explicitamente altura e distribuição preexistentes. */
+html.embedded .main-content>.screen.active,html.embedded #simples-form,html.embedded body:has(>.top) .panel{border-color:var(--rtc-line)}
+html.embedded .main-content>.results-section,html.embedded #results.results,html.embedded body:has(>.top) .layout>.results{border-color:var(--rtc-line);background:#fcfdfd}
+html.embedded .field-grid label,html.embedded .fields label,html.embedded .field{line-height:1.35}
+
+/* Touch, contraste e números grandes. */
+@media(max-width:1100px){
+ .app-shell .tool{font-size:11.5px}
+ .app-shell .tool small{font-size:10px}
+ .app-shell .tool .glyph{width:27px;height:27px}
+ .shell .metric strong{font-size:clamp(16px,2vw,26px)}
+}
+@media(max-width:800px){
+ .app-shell .rail{border-right:0;border-bottom:1px solid #355566}
+ .app-shell .tool-nav{gap:5px}
+ .app-shell .tool{min-width:124px;font-size:11px;padding-inline:9px;white-space:nowrap}
+ .app-shell .tool small{color:#bfd0d9}
+ .app-shell .topbar-heading strong{font-size:14px}
+ .app-shell .status-copy strong{font-size:11px}
+ .app-shell .form-side,.app-shell .result-side{box-shadow:none}
+}
+@media(max-width:540px){
+ .app-shell .light-button{font-size:10px;padding:8px}
+ .app-shell .topbar-actions{gap:5px}
+ .app-shell .result-metric strong{font-size:14px}
+ .shell .metric strong,.app .metric strong{font-size:18px}
+ body:has(>.top) .kpi-val{overflow-wrap:anywhere}
+}
+@media(prefers-reduced-motion:reduce){
+ html{scroll-behavior:auto!important}
+ .app-shell .tool,.app-shell .light-button,.app-shell .primary,.shell .screen.active,.shell .primary-button,.app .primary{transition:none!important;animation:none!important;transform:none!important}
+}
