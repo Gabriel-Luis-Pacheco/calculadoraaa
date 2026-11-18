@@ -57,7 +57,7 @@ $$('[data-tool]').forEach(b=>b.addEventListener('click',()=>navigate(b.dataset.t
 $('help-toggle').addEventListener('click',()=>{$('help').hidden=!$('help').hidden});
 $('help-close').addEventListener('click',()=>{$('help').hidden=true});
 $('compact-toggle').addEventListener('click',()=>{
- const compact=$('.app-shell').classList.toggle('compact');
+ const compact=document.querySelector('.app-shell').classList.toggle('compact');
  $('compact-toggle').setAttribute('aria-pressed',String(compact));
  $('compact-toggle').textContent=compact?'Tela compacta':'Altura livre';
 });
