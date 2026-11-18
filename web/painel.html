@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#112334">
+<meta name="description" content="Ambiente único de trabalho fiscal: simulador RTC, Regime Regular, Simples Nacional, pedágio, NFS-e, bases e consultas oficiais em uma única tela.">
+<title>RTC — Painel Fiscal Integrado</title>
+<link rel="stylesheet" href="/styles-painel.css">
+<script src="/src/painel.js" defer></script>
+</head>
+<body>
+<a href="#workspace" class="skip">Ir ao ambiente fiscal</a>
+<div class="app-shell">
+  <aside class="rail" aria-label="Ferramentas fiscais">
+    <a href="/painel" class="identity" aria-label="RTC - ambiente fiscal"><span class="brand-emblem">▥</span><span class="brand-text"><strong>RTC<span>.</span></strong><small>AMBIENTE FISCAL</small></span></a>
+    <div class="rail-title">SELECIONE A FERRAMENTA</div>
+    <nav class="tool-nav" aria-label="Módulos">
+      <button type="button" class="tool active" data-tool="impacto" aria-current="page"><span class="glyph">◫</span><span>Simulador<small>Custo e comparativos</small></span></button>
+      <button type="button" class="tool" data-tool="regular"><span class="glyph">▦</span><span>Regime Regular<small>CBS, IBS e IS</small></span></button>
+      <button type="button" class="tool" data-tool="simples"><span class="glyph">◈</span><span>Simples Nacional<small>Atividades e tributos</small></span></button>
+      <button type="button" class="tool" data-tool="pedagio"><span class="glyph">≋</span><span>Pedágio<small>Trechos e rateio</small></span></button>
+      <button type="button" class="tool" data-tool="nfse"><span class="glyph">▤</span><span>NFS-e<small>Indicadores e bases</small></span></button>
+      <button type="button" class="tool" data-tool="bases"><span class="glyph">∑</span><span>Bases especiais<small>Mercadorias e IS</small></span></button>
+      <button type="button" class="tool" data-tool="consultas"><span class="glyph">⌕</span><span>Consultas fiscais<small>Tabelas e classificações</small></span></button>
+      <button type="button" class="tool" data-tool="xml"><span class="glyph">⌁</span><span>XML fiscal<small>Validar e gerar</small></span></button>
+    </nav>
+    <div class="rail-bottom">
+      <div class="provenance"><span class="dot-source"></span><div><strong>Motores da Receita Federal</strong><small>Código MIT · instalação independente</small></div></div>
+      <a href="https://github.com/Gabriel-Luis-Pacheco/calculadoraaa" target="_blank" rel="noopener noreferrer" class="source-link">Código e documentação <span aria-hidden="true">↗</span></a>
+    </div>
+  </aside>
+  <div class="main-shell">
+    <header class="topbar">
+      <div class="topbar-heading"><span class="breadcrumbs">RTC <span class="slash">/</span> PAINEL INTEGRADO</span><strong id="active-title">Simulador de impacto</strong></div>
+      <div class="topbar-actions"><span class="top-note">UM AMBIENTE · TODOS OS MÓDULOS</span><button type="button" id="help-toggle" class="light-button" title="Como usar este painel">Ajuda</button><button type="button" id="compact-toggle" class="light-button" aria-pressed="true">Tela compacta</button></div>
+    </header>
+    <div id="work-status" class="status-bar"><div class="status-copy"><strong id="status-head">Os dados ficam nesta tela.</strong><span id="status-sub">Troque de ferramenta sem perder o que já preencheu.</span></div><span id="system-badge" class="system-badge">Apoio tributário independente</span></div>
+    <main id="workspace" tabindex="-1" aria-label="Área de trabalho fiscal">
+      <div id="help" class="help-banner" hidden><strong>Como usar:</strong> selecione um módulo à esquerda. O formulário ocupa o painel central e o resultado é exibido ao lado sempre que possível. Apenas listas grandes e campos adicionais precisam de rolagem interna. Não há cálculo inventado no navegador: Regime Regular e Simples usam seus respectivos serviços Java. <button id="help-close" type="button">Fechar</button></div>
+      <section class="pane frame-pane selected" data-pane="impacto" aria-label="Simulador de impacto">
+        <iframe title="Simulador RTC — comparação de custos" id="frame-impacto" src="/index.html?embedded=1" loading="eager"></iframe>
+      </section>
+      <section class="pane frame-pane" data-pane="regular" aria-label="Regime Regular" hidden>
+        <iframe title="Cálculos do Regime Regular" id="frame-regular" data-src="/oficial.html?embedded=1" loading="lazy"></iframe>
+      </section>
+      <section class="pane frame-pane" data-pane="simples" aria-label="Simples Nacional" hidden>
+        <iframe title="Cálculo do Simples Nacional" id="frame-simples" data-src="/simples.html?embedded=1" loading="lazy"></iframe>
+      </section>
+      <section class="pane frame-pane" data-pane="xml" aria-label="XML" hidden>
+        <div class="embedded-message" id="xml-loading">Carregando a ferramenta de XML do Regime Regular…</div>
+      </section>
+
+      <section class="pane native-pane" data-pane="pedagio" hidden>
+        <div class="form-side">
+          <header class="native-title"><span class="eyebrow">CÁLCULO ESPECIAL · REGIME REGULAR</span><h1>Pedágio <span class="gold">.</span></h1><p>Informe a origem e os trechos. A base e os tributos por município são calculados pelo motor Java oficial.</p></header>
+          <form id="pedagio-form" class="stack" novalidate>
+            <div class="field-grid">
+              <label>Data de emissão <input type="datetime-local" id="ped-data" required></label>
+              <label>UF de origem <select id="ped-uf" required data-uf></select></label>
+              <label>Código IBGE do município de origem <input id="ped-ibge" inputmode="numeric" maxlength="7" placeholder="7 dígitos" required></label>
+              <label>Base total da operação (R$) <input id="ped-base" inputmode="decimal" placeholder="200,00" required></label>
+              <label>CST <input id="ped-cst" inputmode="numeric" maxlength="3" placeholder="000" required></label>
+              <label>cClassTrib <input id="ped-classe" inputmode="numeric" maxlength="6" placeholder="000002" required></label>
+            </div>
+            <div class="list-header"><h2>Trechos da viagem</h2><button type="button" id="add-trecho" class="secondary">+ Trecho</button></div>
+            <div id="trechos" class="dynamic-list"></div>
+            <div class="sticky-submit"><button type="submit" class="primary">Calcular tributos do pedágio <span>→</span></button></div>
+          </form>
+        </div>
+        <aside class="result-side" aria-live="polite"><div class="result-label">RESULTADO DO MOTOR</div><div id="pedagio-result" class="result-content"><div class="empty-state"><span class="empty-icon">≋</span><strong>Resultado sempre à vista</strong><p>Preencha os trechos e solicite o cálculo. Os valores aparecem aqui, sem mudar de página.</p></div></div></aside>
+      </section>
+
+      <section class="pane native-pane" data-pane="nfse" hidden>
+        <div class="form-side">
+          <header class="native-title"><span class="eyebrow">SERVIÇOS · REGIME REGULAR</span><h1>NFS-e <span class="gold">.</span></h1><p>Confira o indicador de operação, consulte o local de incidência ou calcule a base do IBS e da CBS.</p></header>
+          <div class="subtabs" role="group" aria-label="Tipo de consulta NFS-e">
+            <button type="button" class="subtab active" data-nfse="indicador">Validar indicador</button>
+            <button type="button" class="subtab" data-nfse="local">Local da operação</button>
+            <button type="button" class="subtab" data-nfse="base">Base de cálculo</button>
+          </div>
+          <form id="nfse-form" novalidate>
+            <div id="nfse-indicador" class="field-grid">
+              <label>Data do fato gerador <input type="date" id="nfse-data" required></label>
+              <label>Indicador da operação (cIndOp) <input id="nfse-indop" maxlength="6" inputmode="numeric" placeholder="100301" required></label>
+              <label>cClassTrib <input id="nfse-classe" maxlength="6" inputmode="numeric" placeholder="620001" required></label>
+              <label>NBS <input id="nfse-nbs" maxlength="9" inputmode="numeric" placeholder="115021000" required></label>
+              <label>Código tributário nacional (opcional) <input id="nfse-tribnac" maxlength="6" inputmode="numeric" placeholder="0101 ou 010101"></label>
+            </div>
+            <div id="nfse-base" class="field-grid" hidden>
+              <label>Ano do fato gerador <input type="number" id="nfse-ano" min="2026" max="2100"></label>
+              <label>Valor do serviço (R$) <input id="nfse-valor" inputmode="decimal" placeholder="1.000,00"></label>
+              <label>Desconto incondicional (R$) <input id="nfse-desconto" inputmode="decimal" value="0,00"></label>
+              <label>Reembolsos, repasses e ressarcimentos <input id="nfse-reembolso" inputmode="decimal" value="0,00"></label>
+              <label>Deduções e reduções de base <input id="nfse-deducoes" inputmode="decimal" value="0,00"></label>
+              <label>ISS (R$) <input id="nfse-iss" inputmode="decimal" value="0,00"></label>
+              <label>PIS (R$) <input id="nfse-pis" inputmode="decimal" value="0,00"></label>
+              <label>COFINS (R$) <input id="nfse-cofins" inputmode="decimal" value="0,00"></label>
+            </div>
+            <div class="sticky-submit"><button type="submit" class="primary" id="nfse-submit">Validar indicador <span>→</span></button></div>
+          </form>
+        </div>
+        <aside class="result-side" aria-live="polite"><div class="result-label">CONFERÊNCIA NFS-e</div><div id="nfse-result" class="result-content"><div class="empty-state"><span class="empty-icon">▤</span><strong>Validação guiada</strong><p>O motor oficial confere a combinação de códigos, datas e indicadores, de acordo com sua base de vigência.</p></div></div></aside>
+      </section>
+
+      <section class="pane native-pane" data-pane="bases" hidden>
+        <div class="form-side">
+          <header class="native-title"><span class="eyebrow">BASES AUXILIARES · REGIME REGULAR</span><h1>Bases especiais <span class="gold">.</span></h1><p>Informe os componentes do valor da mercadoria. A fórmula é aplicada pelo Java da Receita, de acordo com o ano.</p></header>
+          <form id="base-form" novalidate>
+            <div class="field-grid"><label>Tipo de base <select id="base-tipo"><option value="cbs-ibs-mercadorias">CBS e IBS · mercadorias</option><option value="is-mercadorias">Imposto Seletivo · mercadorias</option></select></label><label>Ano do fato gerador <input type="number" id="base-ano" min="2026" max="2100" required></label></div>
+            <div class="list-header"><h2>Valores da operação</h2><span class="micro">Em reais, valores não informados = zero</span></div>
+            <div id="base-fields" class="field-grid"></div>
+            <div class="sticky-submit"><button type="submit" class="primary">Calcular base <span>→</span></button></div>
+          </form>
+        </div>
+        <aside class="result-side" aria-live="polite"><div class="result-label">BASE OFICIAL CALCULADA</div><div id="base-result" class="result-content"><div class="empty-state"><span class="empty-icon">∑</span><strong>Composição da base</strong><p>O resultado aparecerá aqui junto com os valores devolvidos pelo motor oficial.</p></div></div></aside>
+      </section>
+
+      <section class="pane native-pane" data-pane="consultas" hidden>
+        <div class="form-side">
+          <header class="native-title"><span class="eyebrow">DADOS ABERTOS · REGIME REGULAR</span><h1>Consultas fiscais <span class="gold">.</span></h1><p>Pesquise tabelas, classificações tributárias, créditos, alíquotas e informações oficiais sem lidar com JSON.</p></header>
+          <form id="lookup-form" novalidate>
+            <div class="field-grid">
+              <label class="field-wide">O que deseja consultar? <select id="lookup-route"></select></label>
+              <label id="lookup-data-wrap">Data de referência <input type="date" id="lookup-data"></label>
+              <label id="lookup-code-wrap">Código / filtro (quando aplicável) <input id="lookup-code" placeholder="Código fiscal"></label>
+              <label id="lookup-uf-wrap">UF <select id="lookup-uf" data-uf></select></label>
+              <label id="lookup-mun-wrap">Código do município IBGE <input id="lookup-mun" inputmode="numeric" maxlength="7" placeholder="7 dígitos"></label>
+            </div>
+            <p id="lookup-description" class="micro">Selecione a tabela para conhecer os filtros necessários.</p>
+            <div class="sticky-submit"><button type="submit" class="primary">Consultar tabela <span>→</span></button></div>
+          </form>
+        </div>
+        <aside class="result-side" aria-live="polite"><div class="result-label">DADOS CONSULTADOS</div><div id="lookup-result" class="result-content"><div class="empty-state"><span class="empty-icon">⌕</span><strong>Consulte sem sair da tela</strong><p>Os registros serão apresentados em linhas e cartões, com descrição, códigos e vigências sempre que fornecidos pelo motor.</p></div></div></aside>
+      </section>
+    </main>
+    <footer class="footer-line"><span>Projeto independente · Fonte: código aberto da Receita Federal do Brasil · Licença MIT</span><span id="footer-current">Simulador</span></footer>
+  </div>
+</div>
+<template id="trecho-template"><div class="trecho-card"><div class="trecho-head"><strong>Trecho 01</strong><button type="button" class="delete-trecho">Remover</button></div><div class="field-grid"><label>UF <select data-name="uf" data-uf></select></label><label>Código IBGE <input data-name="municipio" inputmode="numeric" maxlength="7" required placeholder="7 dígitos"></label><label>Extensão em km <input data-name="extensao" inputmode="decimal" required placeholder="10,00"></label></div></div></template>
+</body>
+</html>
