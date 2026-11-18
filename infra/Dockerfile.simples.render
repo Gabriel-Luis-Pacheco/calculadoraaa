@@ -25,4 +25,4 @@ ENV RTC_ENGINE_PROTECTED=true
 ENV SPRING_PROFILES_ACTIVE=offline
 ENV JAVA_TOOL_OPTIONS="-XX:+UseSerialGC -XX:MaxRAMPercentage=72"
 EXPOSE 10000
-ENTRYPOINT ["/bin/sh","-c","exec java -Dserver.port=\${PORT:-10000} -jar /app/app.jar"]
+ENTRYPOINT ["/bin/sh","-c","exec java -Dserver.port=${PORT:-10000} -jar /app/app.jar"]
