@@ -1,0 +1,60 @@
+name: Homologar serviço protegido do Simples Nacional
+
+on:
+  push:
+    paths:
+      - "infra/Dockerfile.simples.render"
+      - "infra/simples/**"
+      - ".github/workflows/simples-docker.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  container:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Construir motor com banco oficial e filtro de autenticação
+        run: docker build -f infra/Dockerfile.simples.render -t rtc-simples-protegido .
+      - name: Verificar inicialização e proteção do Java
+        shell: bash
+        run: |
+          set -euo pipefail
+          KEY=test-secret-for-fiscal-render-service-must-be-very-long
+          docker run -d --rm --name rtc-simples-qa -p 127.0.0.1:18082:10000 \
+            -e PORT=10000 -e RTC_ENGINE_SHARED_KEY="$KEY" rtc-simples-protegido
+          trap 'docker logs --tail 70 rtc-simples-qa || true; docker stop rtc-simples-qa || true' EXIT
+          healthy=false
+          for n in $(seq 1 80); do
+            status=$(curl -s -o /tmp/blocked.json -w '%{http_code}' --max-time 3 http://127.0.0.1:18082/api/versao || true)
+            if [[ "$status" == "401" ]]; then healthy=true; break; fi
+            sleep 3
+          done
+          test "$healthy" = true
+          status=$(curl -s -o /tmp/versao.json -w '%{http_code}' --max-time 15 \
+            -H "X-RTC-Engine-Key: $KEY" http://127.0.0.1:18082/api/versao)
+          test "$status" = 200
+          python3 - <<'PY'
+          import json
+          d=json.load(open('/tmp/versao.json'))
+          assert 'versaoDb' in d
+          print('Java Simples iniciado, versão DB',d['versaoDb'])
+          PY
+          cat > /tmp/operation.json <<'JSON'
+          {"id":"507f1f77bcf86cd799439011","versao":"2.0.0","data":"2027-03-15","tpDoc":"55","CRT":"1",
+          "itens":[{"numero":1,"cAtivSN":"01","cClassTrib":"000001","baseCalculo":"950.00","valorImpostoSeletivo":"0.00","pIBSSN":"1.25","pCBSSN":"2.75"}]}
+          JSON
+          status=$(curl -s -o /tmp/calculo.json -w '%{http_code}' --max-time 30 -X POST \
+             -H "X-RTC-Engine-Key: $KEY" -H 'Content-Type: application/json' \
+             --data-binary @/tmp/operation.json http://127.0.0.1:18082/api/calculadora/observabilidade/simples-nacional)
+          test "$status" = 200
+          python3 - <<'PY'
+          import json
+          j=json.load(open('/tmp/calculo.json'))
+          assert j['objetos'][0]['estadoItem']=='CALCULADO', j
+          assert j['total']['totalTributos'] is not None
+          print('Cálculo oficial validado com acesso protegido:',j['objetos'][0]['estadoItem'])
+          PY
