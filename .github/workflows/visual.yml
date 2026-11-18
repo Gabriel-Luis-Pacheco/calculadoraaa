@@ -1,0 +1,39 @@
+name: QA visual do painel único em navegador real
+
+on:
+  push:
+    paths:
+      - "web/**"
+      - "scripts/visual.mjs"
+      - ".github/workflows/visual.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  visual:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Instalar navegador real
+        run: |
+          npm install --no-audit --no-fund
+          npm install playwright --no-save --no-audit --no-fund
+          npx playwright install chromium --with-deps
+      - name: Servir a web localmente
+        run: |
+          python3 -m http.server 8000 --directory web >/tmp/rtc-web.log 2>&1 &
+          sleep 2
+      - name: Testar desktop, tablet e mobile
+        run: node scripts/visual.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: capturas-rtc-painel
+          path: artifacts/*.png
+          if-no-files-found: ignore
